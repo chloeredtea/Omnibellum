@@ -40,6 +40,16 @@ function GenerateBorders(){
             imgData[i+2] = 0;
             imgData[i+3] = 0;
         }
+        // Check Right
+        if(i < imgData.length - 4 && (imgData[i] != imgData[i+4] || imgData[i+1] != imgData[i+5] || imgData[i+2] != imgData[i+6])){
+            imgData[i] = 0;
+            imgData[i+1] = 0;
+            imgData[i+2] = 0;
+        }
+        // Check left
+        if(i > 0 && (imgData[i-4] != imgData[i] || imgData[i-3] != imgData[i+1] || imgData[i-2] != imgData[i+2])){
+            
+        }
     }
     
     let c2 = document.getElementById("canvas2");
