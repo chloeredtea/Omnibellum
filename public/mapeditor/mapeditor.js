@@ -1,5 +1,6 @@
 
 // Loading uploaded image into memory
+
 // Black box -- DO NOT TOUCH
 window.addEventListener('load', function() {
     document.querySelector('input[type="file"]').addEventListener('change', function() {
@@ -34,22 +35,39 @@ function GenerateBorders(){
     imgRawData = ctx.getImageData(0, 0, c.width, c.height);
     imgData = imgRawData.data;
     for(let i = 0; i < imgData.length; i+=4){
+        if(imgData[i] != 0 || imgData[i+1] != 0 || imgData[i+2] != 0){
+            // Check Right
+            if(i < imgData.length - 4 && (imgData[i] != imgData[i+4] || imgData[i+1] != imgData[i+5] || imgData[i+2] != imgData[i+6])){
+                if(imgData[i+4] != 0 || imgData[i+5] != 0 || imgData[i+6] != 0){
+                    imgData[i] = 0;
+                    imgData[i+1] = 0;
+                    imgData[i+2] = 0;
+                    imgData[i+3] = 255;
+                }
+            }
+            // Check Up
+            if(i > c.width*4 && (imgData[i] != imgData[i-c.width*4] || imgData[i+1] != imgData[i-c.width*4+1] || imgData[i+2] != imgData[i-c.width*4+2])){
+                
+            }
+            // Check left
+            if(i > 0 && (imgData[i-4] != imgData[i] || imgData[i-3] != imgData[i+1] || imgData[i-2] != imgData[i+2])){
+                
+            }
+            // Check Down
+            if(i < imgData.length - c.width*4 && (imgData[i] != imgData[i+c.width*4] || imgData[i+1] != imgData[i+1+c.width*4] || imgData[i+2] != imgData[i+2+c.width*4])){
+                imgData[i] = 0;
+                imgData[i+1] = 0;
+                imgData[i+2] = 0;
+                imgData[i+3] = 255;
+            }
+        }
         if(imgData[i] == 255 && imgData[i+1] == 255 && imgData[i+2] == 255){
-            imgData[i+0] = 255;
+            imgData[i+0] = 0;
             imgData[i+1] = 0;
             imgData[i+2] = 0;
             imgData[i+3] = 0;
         }
-        // Check Right
-        if(i < imgData.length - 4 && (imgData[i] != imgData[i+4] || imgData[i+1] != imgData[i+5] || imgData[i+2] != imgData[i+6])){
-            imgData[i] = 0;
-            imgData[i+1] = 0;
-            imgData[i+2] = 0;
-        }
-        // Check left
-        if(i > 0 && (imgData[i-4] != imgData[i] || imgData[i-3] != imgData[i+1] || imgData[i-2] != imgData[i+2])){
-            
-        }
+        
     }
     
     let c2 = document.getElementById("canvas2");
