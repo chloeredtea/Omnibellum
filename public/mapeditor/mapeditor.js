@@ -1,4 +1,3 @@
-
 // Loading uploaded image into memory
 window.addEventListener('load', function() {
     document.querySelector('input[type="file"]').addEventListener('change', function() {
@@ -16,6 +15,7 @@ window.addEventListener('load', function() {
 
 let imgData, c;
 let vertexdata = {};
+let statepixels = {};
 
 function GenerateBorders(){
     c = document.getElementById("canvas1");
@@ -104,10 +104,70 @@ function GenerateBorders(){
             imgData[i+2] = 0;
             imgData[i+3] = 0;
         }
+
+        if((imgData[i] != 0 || imgData[i+1] != 0 || imgData[i+2] != 0) && (imgData[i] != 255 || imgData[i+1] != 255 || imgData[i+2] != 255)){
+            if(statepixels.hasOwnProperty(initialcolor)){
+                statepixels[initialcolor].push(i/4);
+            }
+            else{
+                statepixels[initialcolor] = [i/4];
+            }
+        }
     }
     let c2 = document.getElementById("canvas2");
     let ctx2 = c2.getContext("2d");
     c2.width = c.width;
     c2.height = c.height;
     ctx2.putImageData(imgRawData, 0, 0);
+}
+
+function GenerateSpriteMap(){
+    let height = 0;
+    let width = 0;
+    let statemetadata = {};
+    for(let i = 0; i < Object.keys(statepixels).length; i++){
+        let leftbound = Infinity;
+        let rightbound = 0;
+        let lowerbound = Infinity;
+        let upperbound = 0;
+        let currentpixellist = statepixels[Object.keys(statepixels)[i]]
+        for(let j = 0; j < currentpixellist.length; j++){
+            if(currentpixellist[j] < lowerbound){
+                lowerbound = currentpixellist[j];
+            }
+            if(currentpixellist[j] > upperbound){
+                upperbound = currentpixellist[j];
+            }
+            if((currentpixellist[j] % c.width) < leftbound){
+                leftbound = currentpixellist[j] % c.width;
+            }
+            if((currentpixellist[j] % c.width) > rightbound){
+                rightbound = currentpixellist[j] % c.width;
+            }
+        }
+        statemetadata[Object.keys(statepixels)[i]] = [Math.floor(upperbound/c.width) - Math.floor(lowerbound/c.width) + 1, rightbound - leftbound + 1, leftbound, Math.floor(lowerbound/c.width) + 1]
+        height += Math.floor(upperbound/c.width) - Math.floor(lowerbound/c.width) + 1;
+        if(rightbound - leftbound + 1 > width){
+            width = rightbound - leftbound + 1;
+        }
+    }
+    
+    // Draw Spritemap
+
+    let c3 = document.getElementById("canvas3");
+    let ctx3 = c3.getContext("2d")
+    c3.width = width;
+    c3.height = height;
+
+    ctx3.fillStyle = "#999";
+    let currentheight = 0;
+    let currentwidth = 0;
+    for(let i = 0; i < Object.keys(statepixels).length; i++){
+        let currentpixellist = statepixels[Object.keys(statepixels)[i]]
+        let currentmetadata = statemetadata[Object.keys(statemetadata)[i]]
+        for(let j = 0; j < currentpixellist.length; j++){
+            ctx3.fillRect(currentpixellist[j] % c.width - currentmetadata[2], currentheight + Math.floor(currentpixellist[j]/c.width) - currentmetadata[3], 1, 1);
+        }
+        currentheight += currentmetadata[0];
+    }
 }
