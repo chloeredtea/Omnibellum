@@ -16,6 +16,28 @@ window.addEventListener('load', function() {
 let imgData, c1, c2, c3, c4;
 let vertexdata = {};
 let statepixels = {};
+let adjacencies = {};
+let oldnamestonames = {};
+
+function addAdjacencies(color, othercolor){
+    if(othercolor === "000" || othercolor === "255255255"){
+        return;
+    }
+    if(othercolor != color){
+        if(!adjacencies.hasOwnProperty(color)){
+            adjacencies[color] = [];
+        }
+        if(!adjacencies.hasOwnProperty(othercolor)){
+            adjacencies[othercolor] = [];
+        }
+        if(adjacencies[color].indexOf(othercolor) === -1){
+            adjacencies[color].push(othercolor);
+        }
+        if(adjacencies[othercolor].indexOf(color) === -1){
+            adjacencies[othercolor].push(color);
+        }
+    }
+}
 
 function GenerateBorders(){
     c1 = document.getElementById("canvas1");
@@ -25,9 +47,32 @@ function GenerateBorders(){
     c1.height = img.height
     ctx.drawImage(img, 0, 0)
 
-// Finding the borders of the states and putting them into two dictionaries.
+
     imgRawData = ctx.getImageData(0, 0, c1.width, c1.height);
     imgData = imgRawData.data;
+// Finding Adjacencies
+
+    for(let i = 0; i < imgData.length; i+=4){
+        let color = "" + imgData[i]+imgData[i+1]+imgData[i+2];
+        let othercolor;
+        // We dont care about black or white pixels
+        if(color === "000" || color === "255255255"){
+            continue;
+        }
+        // Check Right
+        // We can't check right if we are at the last pixel
+        if(i < imgData.length - 4){
+            othercolor = "" + imgData[i+4]+imgData[i+5]+imgData[i+6];
+            addAdjacencies(color, othercolor);
+        }
+        // Check Up
+        // We can't check if we're in the first row
+        if(i > c1.width*4){
+            othercolor = "" + imgData[i-c1.width*4]+imgData[i+1-c1.width*4]+imgData[i+2-c1.width*4];
+            addAdjacencies(color, othercolor);
+        }
+    }
+// Finding the borders of the states and putting them into two dictionaries.
     for(let i = 0; i < imgData.length; i+=4){
         let initialcolor = "" + imgData[i]+imgData[i+1]+imgData[i+2];
         if(imgData[i] != 0 || imgData[i+1] != 0 || imgData[i+2] != 0){
@@ -190,6 +235,8 @@ function isEnterPressed(e){
     }
 }
 
+let finaladjacencies = {};
+
 function GetStateNames(){
     
     let ctx4;
@@ -206,16 +253,36 @@ function GetStateNames(){
     }
     else {
         finalstatemetadata.push([nameinput.value, statemetadata[Object.keys(statemetadata)[statenamestate]][1], statemetadata[Object.keys(statemetadata)[statenamestate]][0], statemetadata[Object.keys(statemetadata)[statenamestate]][2], statemetadata[Object.keys(statemetadata)[statenamestate]][3], statemetadata[Object.keys(statemetadata)[statenamestate]][4], vertexdata[Object.keys(vertexdata)[statenamestate]]]);
+        oldnamestonames[Object.keys(statemetadata)[statenamestate]] = nameinput.value;
         nameinput.value = "";
     }
     statenamestate++;
     if(statenamestate == Object.keys(statemetadata).length){
+        for(let i = 0; i < Object.keys(adjacencies).length; i++){
+            finaladjacencies[finalstatemetadata[i][0]] = [];
+            for(let j = 0; j < adjacencies[Object.keys(adjacencies)[i]].length; j++){
+                finaladjacencies[finalstatemetadata[i][0]].push(oldnamestonames[adjacencies[Object.keys(adjacencies)[i]][j]]);
+            }
+        }
         DrawState(ctx3, "#999", statenamestate - 1);
         DrawStates(ctx4);
+
         let output = document.getElementById("output");
         output.innerText += "statemetadata = ["
         for(let i = 0; i < finalstatemetadata.length; i++){
-            output.innerText += "[" + "\""+ finalstatemetadata[i][0] + "\", " + finalstatemetadata[i][1] + ", " + finalstatemetadata[i][2] + ", " + finalstatemetadata[i][3] + ", " + finalstatemetadata[i][4] + ", " + finalstatemetadata[i][5] + ", [" + finalstatemetadata[i][6][0] + "]" + ", [" + finalstatemetadata[i][6][1] + "]],";
+            output.innerText += "[" + "\""+ finalstatemetadata[i][0] + "\", " // Add name [0]
+            + finalstatemetadata[i][1] + ", " // Add width [1]
+            + finalstatemetadata[i][2] + ", " // Add height [2]
+            + finalstatemetadata[i][3] + ", " // Add dx [3]
+            + finalstatemetadata[i][4] + ", " // add dy [4]
+            + finalstatemetadata[i][5] + ", [" // add sy [5]
+            + finalstatemetadata[i][6][0] + "]" // add vertexdatax [6]
+            + ", [" + finalstatemetadata[i][6][1] + "],"; // add vertexdatay [7]
+            output.innerText += "[" // add adjacencies [8]
+            for(let j = 0; j  < finaladjacencies[finalstatemetadata[i][0]].length; j++){
+                output.innerText += "\"" + finaladjacencies[finalstatemetadata[i][0]][j] + "\", ";
+            }
+            output.innerText += "]],";
         }
         output.innerText = output.innerText.substring(0, output.innerText.length - 1);
         output.innerText += "];"
@@ -243,5 +310,3 @@ function DrawStates(ctx4){
         cumheight += currentmetadata[0];
     }
 }
-
-// Name, Width, Height, dx, dy, sy, vertexdata
