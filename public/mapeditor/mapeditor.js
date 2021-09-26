@@ -178,14 +178,25 @@ function GenerateSpriteMap(){
     GetStateNames();
 }
 
-let statenamestate = 0;
+let statenamestate = -1;
+let finalstatemetadata = [];
+let nameinput = document.getElementById("statenamesubmission")
+
+nameinput.addEventListener('keydown', isEnterPressed);
+
+function isEnterPressed(e){
+    if(e.code == "Enter"){
+        GetStateNames();
+    }
+}
 
 function GetStateNames(){
+    
     let ctx4;
     c4 = document.getElementById("canvas4");
     ctx4 = c4.getContext("2d");
     let ctx3 = c3.getContext("2d")
-    if(statenamestate == 0){
+    if(statenamestate == -1){
         c4.width = c1.width;
         c4.height = c1.height;
         c2.style.display = "none";
@@ -193,12 +204,30 @@ function GetStateNames(){
         ctx3.globalCompositeOperation = "source-atop";
         DrawStates(ctx4);
     }
-    DrawState(ctx3, "#F00", statenamestate);
-    if(statenamestate > 0){
-        DrawState(ctx3, "#999", statenamestate - 1);
+    else {
+        finalstatemetadata.push([nameinput.value, statemetadata[Object.keys(statemetadata)[statenamestate]][1], statemetadata[Object.keys(statemetadata)[statenamestate]][0], statemetadata[Object.keys(statemetadata)[statenamestate]][2], statemetadata[Object.keys(statemetadata)[statenamestate]][3], statemetadata[Object.keys(statemetadata)[statenamestate]][4], vertexdata[Object.keys(vertexdata)[statenamestate]]]);
+        nameinput.value = "";
     }
     statenamestate++;
-    DrawStates(ctx4);
+    if(statenamestate == Object.keys(statemetadata).length){
+        DrawState(ctx3, "#999", statenamestate - 1);
+        DrawStates(ctx4);
+        let output = document.getElementById("output");
+        output.innerText += "statemetadata = ["
+        for(let i = 0; i < finalstatemetadata.length; i++){
+            output.innerText += "[" + "\""+ finalstatemetadata[i][0] + "\", " + finalstatemetadata[i][1] + ", " + finalstatemetadata[i][2] + ", " + finalstatemetadata[i][3] + ", " + finalstatemetadata[i][4] + ", " + finalstatemetadata[i][5] + ", [" + finalstatemetadata[i][6][0] + "]" + ", [" + finalstatemetadata[i][6][1] + "]],";
+        }
+        output.innerText = output.innerText.substring(0, output.innerText.length - 1);
+        output.innerText += "];"
+
+    }
+    else{
+        DrawState(ctx3, "#F00", statenamestate);
+        if(statenamestate > 0){
+            DrawState(ctx3, "#999", statenamestate - 1);
+        }
+        DrawStates(ctx4);
+    }
 }
 
 function DrawState(ctx3, color, i){
@@ -214,3 +243,5 @@ function DrawStates(ctx4){
         cumheight += currentmetadata[0];
     }
 }
+
+// Name, Width, Height, dx, dy, sy, vertexdata
