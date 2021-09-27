@@ -3,6 +3,14 @@ const dom = {
     c: document.getElementById("canvas")
 }
 const ctx = dom.c.getContext("2d")
+const socket = io();
+let img;
+
+socket.on("message", (value) =>{
+    console.log(value);
+    img = new Image();
+    img.src = "data:image/png;base64," + value;
+});
 
 // Global Functions
 function Init(){
@@ -18,7 +26,7 @@ class Game {
     }
 
     Update(){
-        
+
     }
 
     Draw(){

@@ -4,7 +4,7 @@
   "description": "web war game",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app"
   },
   "repository": {
     "type": "git",
@@ -13,6 +13,8 @@
   "author": "chloeredtea",
   "license": "ISC",
   "dependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "pngjs": "^6.0.0",
+    "socket.io": "^4.2.0"
   }
 }
