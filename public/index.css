@@ -1,3 +1,40 @@
-body{
-    background-color: orange;
+.flex-row {
+    flex-direction: row;
+    display: flex;
+}
+
+.flex-column {
+    flex-direction: column;
+    display: flex;
+}
+
+.flex-body {
+    display: flex;
+    justify-content: center;
+}
+
+#canvasdiv {
+    margin-bottom: 10px;
+    height: 600px;
+}
+
+#chatbox {
+    background-color: blue;
+    height: 655px;
+    width: 250px;
+    margin-right: 10px;
+}
+
+#infobox {
+    width: 800px;
+    height: 45px;
+    background-color: red;
+    margin-top: 0px;
+}
+
+#playerlist {
+    background-color: green;
+    width: 250px;
+    height: 655px;
+    margin-left: 10px;
 }
