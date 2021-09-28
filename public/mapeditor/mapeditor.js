@@ -268,7 +268,7 @@ function GetStateNames(){
         DrawStates(ctx4);
 
         let output = document.getElementById("output");
-        output.innerText += "["
+        output.innerText += "[" + c3.width + ", " + c3.height + ", "
         for(let i = 0; i < finalstatemetadata.length; i++){
             output.innerText += "[" + "\""+ finalstatemetadata[i][0] + "\", " // Add name [0]
             + finalstatemetadata[i][1] + ", " // Add width [1]
