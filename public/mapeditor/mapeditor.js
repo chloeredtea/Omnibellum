@@ -258,10 +258,16 @@ function GetStateNames(){
     }
     statenamestate++;
     if(statenamestate == Object.keys(statemetadata).length){
+        let nametonumberdict = {};
+        for(let i = 0; i < Object.keys(statemetadata).length; i++){
+            nametonumberdict[Object.keys(statemetadata)[i]] = i;
+        }
         for(let i = 0; i < Object.keys(adjacencies).length; i++){
             finaladjacencies[finalstatemetadata[i][0]] = [];
+            let currentadjacencies = adjacencies[Object.keys(adjacencies)[i]];
             for(let j = 0; j < adjacencies[Object.keys(adjacencies)[i]].length; j++){
-                finaladjacencies[finalstatemetadata[i][0]].push(oldnamestonames[adjacencies[Object.keys(adjacencies)[i]][j]]);
+                console.log(adjacencies[Object.keys(adjacencies)[i]]);
+                finaladjacencies[finalstatemetadata[i][0]].push(nametonumberdict[currentadjacencies[Object.keys(currentadjacencies)[j]]]);
             }
         }
         DrawState(ctx3, "#999", statenamestate - 1);
@@ -280,8 +286,9 @@ function GetStateNames(){
             + ", [" + finalstatemetadata[i][6][1] + "],"; // add vertexdatay [7]
             output.innerText += "[" // add adjacencies [8]
             for(let j = 0; j  < finaladjacencies[finalstatemetadata[i][0]].length; j++){
-                output.innerText += "\"" + finaladjacencies[finalstatemetadata[i][0]][j] + "\", ";
+                output.innerText += finaladjacencies[finalstatemetadata[i][0]][j] + ",";
             }
+            output.innerText = output.innerText.substring(0, output.innerText.length - 1);
             output.innerText += "]],";
         }
         output.innerText = output.innerText.substring(0, output.innerText.length - 1);

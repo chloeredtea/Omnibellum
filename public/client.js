@@ -41,6 +41,12 @@ function InitSocketFunctions(){
             game.Draw(); 
         }
     })
+    
+    socket.on("conquest", (player, tile, success) => {
+        if(success){
+            game.stateowners[tile] = player;
+        }
+    });
 }
 
 // Classes
@@ -79,7 +85,7 @@ class Game {
                 if(pointinside(this.metadata[i][6], this.metadata[i][7], mousex, mousey)){
                     this.highlightedstate = i;
                     if(mouseclick){
-                        this.stateowners[i] = this.player;
+                        socket.emit("attack", i);
                     }
                     break;
                 }

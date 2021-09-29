@@ -36,6 +36,14 @@
 #playerlist {
     background-color: green;
     width: 250px;
-    height: 655px;
+    height: 600px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+
+#turnsremaining {
+    background-color: purple;
+    height: 45px;
+    width: 250px;
     margin-left: 10px;
 }
