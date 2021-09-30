@@ -22,9 +22,10 @@ for(let i = 0; i < Object.keys(mapData).length; i++){
 
 class Game {
     constructor(){
-        this.players = []; // [socket, playernum]
+        this.players = []; // [socket, playernum, turnval]
         this.stateowners = []
         this.turn = 0;
+        this.subturn = 0;
         for(let i = 0; i < Object.keys(mapData["unitedstates"]).length; i++){
             if(i == 5){
                 this.stateowners.push(0);
@@ -52,7 +53,12 @@ class Game {
             }
             if(adjacent){
                 this.BroadcastNewConquest(playernumber, index);
-                this.turn = (this.turn + 1) % 3;
+                this.subturn++;
+                console.log(this.subturn);
+                if(this.subturn == this.players[this.turn][2]){
+                    this.turn = (this.turn + 1) % this.players.length;
+                    this.subturn = 0;
+                }
             }
         }
     }
@@ -93,7 +99,7 @@ io.on('connection', socket => {
         socket.game.Attack(index, socket.playernumber)
     })
 
-    game.players.push([socket, playernum]);
+    game.players.push([socket, playernum, 3]);
     playernum++;
 
 })
