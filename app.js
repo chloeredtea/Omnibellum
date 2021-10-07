@@ -60,6 +60,7 @@ class Game {
                     if(this.subturn == this.players[this.turn][2]){
                         this.turn = (this.turn + 1) % this.players.length;
                         this.subturn = 0;
+                        this.players[this.turn][2] = 1 + Math.floor(.25*Count(this.stateowners, this.turn));
                     }
                     this.BroadcastNewConquest(playernumber, index);
                 }
@@ -79,7 +80,7 @@ class Game {
             this.stateowners[tile] = player;
         }
         for(let i = 0; i < this.players.length; i++){
-            this.players[i][0].emit("conquest", player, tile, success, this.turn, this.subturn, this.players[player][2]);
+            this.players[i][0].emit("conquest", player, tile, success, this.turn, this.subturn, this.players[this.turn][2]);
         }
     }
 
@@ -108,7 +109,7 @@ io.on('connection', socket => {
         socket.game.Attack(index, socket.playernumber)
     })
 
-    game.players.push([socket, playernum, 3]);
+    game.players.push([socket, playernum, 1]);
     
 
     socket.emit("playernum", playernum)
@@ -120,3 +121,12 @@ io.on('connection', socket => {
 io.listen(server);
 
 
+function Count(array, searchval){
+    let count = 0;
+    array.forEach((el) =>{
+        if(el == searchval){
+            count++;
+        }
+    });
+    return count;
+}
