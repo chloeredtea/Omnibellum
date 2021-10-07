@@ -47,11 +47,21 @@ function InitSocketFunctions(){
         }
     })
     
-    socket.on("conquest", (player, tile, success) => {
+    socket.on("conquest", (player, tile, success, turn, subaction, maxsubactions) => {
         if(success){
             game.stateowners[tile] = player;
         }
+        if(game.gamestate == "conquest"){
+            dom.turnsremainingval.innerText = maxsubactions - subaction;
+            dom.turnsremainingtext.innerText = "Player " + turn + " Actions remaining:"
+            game.turn = turn;
+            game.subturn = subaction;
+        }
     });
+
+    socket.on("gamestate", (gamestate) => {
+        game.gamestate = gamestate;
+    })
 }
 
 // Classes
@@ -66,9 +76,6 @@ class Game {
         this.oldmousex = 0;
         this.oldmousey = 0;
         this.gamestate = "claim";
-        this.turn = 0;
-        this.subturn = 0;
-        this.turnlimit = 3;
         this.highlightedstate = null;
         this.player = 0;
         this.stateowners = [];
@@ -85,31 +92,6 @@ class Game {
         }, 16)
     }
 
-    GameUpdate(){
-        this.subturn++;
-        if(this.subturn == this.turnlimit){
-            this.subturn = 0;
-            this.turn++;
-            if(this.turn == this.players.length){
-                this.turn = 0;
-            }
-        }
-        dom.turnsremainingval.innerText = this.turnlimit - this.subturn;
-        dom.turnsremainingtext.innerText = "Player " + this.turn + " Actions remaining: "
-    }
-
-    IsAdjacent(index){
-        console.log(this.metadata)
-        let adjacent = false;
-        for(let i = 0; i < this.metadata[index][8].length; i++){
-            if(this.stateowners[this.metadata[index][8][i]] == this.player && this.stateowners[index] != this.player){
-                adjacent = true;
-                break;
-            }
-        }
-        return adjacent;
-    }
-
     Update(){
         if(this.oldmousex != mousex || this.oldmousey != mousey || mouseclick){
             this.oldmousex = mousex;
@@ -123,10 +105,9 @@ class Game {
                             socket.emit("attack", i);
                         }
                     }
-                    else if(this.gamestate == "conquer"){
-                        if(mouseclick && this.turn == this.player && this.IsAdjacent(i)){
+                    else if(this.gamestate == "conquest"){
+                        if(mouseclick){
                             socket.emit("attack", i);
-                            this.GameUpdate();
                         }
                     }
                     break;

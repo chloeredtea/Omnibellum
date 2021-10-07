@@ -37,13 +37,13 @@ class Game {
     Attack(index, playernumber){
         if(this.gamestate == "claim"){
             if(!this.claimed[playernumber] && this.stateowners[index] == -1){
-                this.BroadcastNewConquest(playernumber, index);
                 this.claimnum++;
+                if(this.claimnum == this.players.length){
+                    this.gamestate = "conquest";
+                    this.BroadcastNewGamestate();
+                }
                 this.claimed[playernumber] = true;
-            }
-            if(this.claimnum == this.players.length){
-                this.gamestate = "conquest";
-                this.BroadcastNewGamestate();
+                this.BroadcastNewConquest(playernumber, index);
             }
         }
         else if (this.gamestate = "conquest"){
@@ -56,13 +56,12 @@ class Game {
                     }
                 }
                 if(adjacent){
-                    this.BroadcastNewConquest(playernumber, index);
                     this.subturn++;
-                    console.log(this.subturn);
                     if(this.subturn == this.players[this.turn][2]){
                         this.turn = (this.turn + 1) % this.players.length;
                         this.subturn = 0;
                     }
+                    this.BroadcastNewConquest(playernumber, index);
                 }
             }
         }
@@ -80,13 +79,13 @@ class Game {
             this.stateowners[tile] = player;
         }
         for(let i = 0; i < this.players.length; i++){
-            this.players[i][0].emit("conquest", player, tile, success);
+            this.players[i][0].emit("conquest", player, tile, success, this.turn, this.subturn, this.players[player][2]);
         }
     }
 
     BroadcastNewGamestate(){
         for(let i = 0; i < this.players.length; i++){
-            this.players[i][0].emit(this.gamestate);
+            this.players[i][0].emit("gamestate", this.gamestate);
         }
     }
 }
