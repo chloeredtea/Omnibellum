@@ -1,3 +1,7 @@
+p {
+    font-size: 20px;
+    color: white;
+}
 .flex-row {
     flex-direction: row;
     display: flex;
@@ -42,8 +46,25 @@
 }
 
 #turnsremaining {
-    background-color: purple;
+    display: flex;
+    background-color: #800080;
     height: 45px;
     width: 250px;
     margin-left: 10px;
+}
+
+#turnsremainingtext {
+    width: 65%;
+    height: 20px;
+    margin-top: 15px;
+    margin-left: 10px;
+    font-size: 14px;
+}
+
+#turnsremainingval {
+    width: 10%;
+    height: 20px;
+    margin-top: 10px;
+    margin-left: 10px;
+    font-variant-numeric: tabular-nums;
 }

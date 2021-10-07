@@ -26,38 +26,43 @@ class Game {
         this.stateowners = []
         this.turn = 0;
         this.subturn = 0;
+        this.claimnum = 0;
+        this.gamestate = "claim";
+        this.claimed = [];
         for(let i = 0; i < Object.keys(mapData["unitedstates"]).length; i++){
-            if(i == 5){
-                this.stateowners.push(0);
-            }
-            else if(i == 41){
-                this.stateowners.push(1);
-            }
-            else if(i == 40){
-                this.stateowners.push(2);
-            }
-            else{
-                this.stateowners.push(-1);
-            }
+            this.stateowners.push(-1);
         }
     }
 
     Attack(index, playernumber){
-        if(playernumber == this.turn){
-            let adjacent = false;
-            for(let i = 0; i < mapData["unitedstates"][index + 2][8].length; i++){
-                if(this.stateowners[mapData["unitedstates"][index + 2][8][i]] == playernumber && this.stateowners[index] != playernumber){
-                    adjacent = true;
-                    break;
-                }
-            }
-            if(adjacent){
+        if(this.gamestate == "claim"){
+            if(!this.claimed[playernumber] && this.stateowners[index] == -1){
                 this.BroadcastNewConquest(playernumber, index);
-                this.subturn++;
-                console.log(this.subturn);
-                if(this.subturn == this.players[this.turn][2]){
-                    this.turn = (this.turn + 1) % this.players.length;
-                    this.subturn = 0;
+                this.claimnum++;
+                this.claimed[playernumber] = true;
+            }
+            if(this.claimnum == this.players.length){
+                this.gamestate = "conquest";
+                this.BroadcastNewGamestate();
+            }
+        }
+        else if (this.gamestate = "conquest"){
+            if(playernumber == this.turn){
+                let adjacent = false;
+                for(let i = 0; i < mapData["unitedstates"][index + 2][8].length; i++){
+                    if(this.stateowners[mapData["unitedstates"][index + 2][8][i]] == playernumber && this.stateowners[index] != playernumber){
+                        adjacent = true;
+                        break;
+                    }
+                }
+                if(adjacent){
+                    this.BroadcastNewConquest(playernumber, index);
+                    this.subturn++;
+                    console.log(this.subturn);
+                    if(this.subturn == this.players[this.turn][2]){
+                        this.turn = (this.turn + 1) % this.players.length;
+                        this.subturn = 0;
+                    }
                 }
             }
         }
@@ -78,6 +83,12 @@ class Game {
             this.players[i][0].emit("conquest", player, tile, success);
         }
     }
+
+    BroadcastNewGamestate(){
+        for(let i = 0; i < this.players.length; i++){
+            this.players[i][0].emit(this.gamestate);
+        }
+    }
 }
 
 let game = new Game();
@@ -87,7 +98,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 io.on('connection', socket => {
     console.log("New Connection")
-
     socket.on("maprequest", (mapname) => {
         socket.emit("mapresponse", spritesheets[mapname], mapData[mapname])
     })
@@ -100,6 +110,10 @@ io.on('connection', socket => {
     })
 
     game.players.push([socket, playernum, 3]);
+    
+
+    socket.emit("playernum", playernum)
+
     playernum++;
 
 })
