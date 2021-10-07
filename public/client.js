@@ -62,6 +62,10 @@ function InitSocketFunctions(){
     socket.on("gamestate", (gamestate) => {
         game.gamestate = gamestate;
     })
+
+    socket.on("players", (players) =>{
+        game.players = players;
+    })
 }
 
 // Classes
@@ -79,11 +83,7 @@ class Game {
         this.highlightedstate = null;
         this.player = 0;
         this.stateowners = [];
-        this.players = [
-            ["Chloe", "#F00"],
-            ["Kate", "#0F0"],
-            ["Felix", "#00F"]
-        ];
+        this.players = []; // Playernum, subturnlimit, color
         this.gameInterval = setInterval(()=>{
             let temp = performance.now();
             game.Update();
@@ -133,7 +133,7 @@ class Game {
         if(this.metadata != undefined){
             for(let i = 0; i < this.metadata.length; i++){
                 if(this.stateowners[i] != -1){
-                    this.sctx.fillStyle = this.players[this.stateowners[i]][1];
+                    this.sctx.fillStyle = this.players[this.stateowners[i]][2];
                     this.sctx.fillRect(0, this.metadata[i][5] - 1, this.spritesheet.width, this.metadata[i][2]);
                 }
                 ctx.drawImage(this.spritesheet, 0, this.metadata[i][5] - 1, this.metadata[i][1], this.metadata[i][2], this.metadata[i][3], this.metadata[i][4], this.metadata[i][1], this.metadata[i][2]);

@@ -89,6 +89,16 @@ class Game {
             this.players[i][0].emit("gamestate", this.gamestate);
         }
     }
+
+    BroadcastPlayers(){
+        let sendarray = [];
+        for(let i = 0; i < this.players.length; i++){
+            sendarray.push(this.players[i].slice(1));
+        }
+        for(let i = 0; i < this.players.length; i++){
+            this.players[i][0].emit("players", sendarray);
+        }
+    }
 }
 
 let game = new Game();
@@ -109,7 +119,8 @@ io.on('connection', socket => {
         socket.game.Attack(index, socket.playernumber)
     })
 
-    game.players.push([socket, playernum, 1]);
+    game.players.push([socket, playernum, 1, "#" + Math.floor(Math.random()*90+10) + Math.floor(Math.random()*90+10) + Math.floor(Math.random()*90+10)]);
+    game.BroadcastPlayers();
     
 
     socket.emit("playernum", playernum)
