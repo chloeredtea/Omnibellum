@@ -61,7 +61,7 @@ class Game {
                         this.AdvanceTurn();
                         this.subturn = 0;
                         if(Count(this.stateowners, this.turn) == 0){
-                            this.players[this.turn[2]] = 0
+                            this.players[this.turn][2] = 0
                             this.AdvanceTurn();
                         }
                         this.players[this.turn][2] = 1 + Math.floor(.25*Count(this.stateowners, this.turn));
@@ -74,7 +74,7 @@ class Game {
     
     AdvanceTurn(){
         this.turn = (this.turn + 1) % this.players.length;
-        if(this.players[this.turn] == 0){
+        if(this.players[this.turn][2] == 0){
             this.AdvanceTurn();
         }
     }
@@ -89,6 +89,10 @@ class Game {
         }
         if(success){
             this.stateowners[tile] = player;
+            if(Count(this.stateowners, this.turn) == 0){
+                this.players[this.turn][2] = 0
+                this.AdvanceTurn();
+            }
         }
         for(let i = 0; i < this.players.length; i++){
             this.players[i][0].emit("conquest", player, tile, success, this.turn, this.subturn, this.players[this.turn][2]);

@@ -68,3 +68,9 @@ p {
     margin-left: 10px;
     font-variant-numeric: tabular-nums;
 }
+
+#iconcanvas {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 10px;
+}

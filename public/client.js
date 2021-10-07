@@ -1,10 +1,13 @@
 // Declare Constant Variables
 const dom = {
     c: document.getElementById("canvas"),
+    iconc: document.getElementById("iconcanvas"),
     turnsremainingtext: document.getElementById("turnsremainingtext"),
     turnsremainingval: document.getElementById("turnsremainingval")
 }
+
 const ctx = dom.c.getContext("2d")
+const ictx = dom.iconc.getContext("2d")
 let socket;
 let game;
 let mousex = 0, mousey = 0, mouseclick = false;
@@ -23,6 +26,8 @@ function Init(){
     dom.c.onmousedown = (e) =>{
         mouseclick = true;
     }
+    dom.iconc.width = 65;
+    dom.iconc.height = 600;
 }
 
 function InitSocketFunctions(){
@@ -50,6 +55,12 @@ function InitSocketFunctions(){
     socket.on("conquest", (player, tile, success, turn, subaction, maxsubactions) => {
         if(success){
             game.stateowners[tile] = player;
+            if(game.gamestate == "claim"){
+                game.playersfinishedclaiming[player] = true;
+                if(player == game.player && game.gamestate == "claim"){
+                    dom.turnsremainingtext.innerText = "Waiting for other players..."
+                }
+            }
         }
         if(game.gamestate == "conquest"){
             dom.turnsremainingval.innerText = maxsubactions - subaction;
@@ -82,6 +93,7 @@ class Game {
         this.gamestate = "claim";
         this.highlightedstate = null;
         this.player = 0;
+        this.playersfinishedclaiming = [];
         this.stateowners = [];
         this.players = []; // Playernum, subturnlimit, color
         this.gameInterval = setInterval(()=>{
@@ -138,6 +150,21 @@ class Game {
                 }
                 ctx.drawImage(this.spritesheet, 0, this.metadata[i][5] - 1, this.metadata[i][1], this.metadata[i][2], this.metadata[i][3], this.metadata[i][4], this.metadata[i][1], this.metadata[i][2]);
             }
+        }
+        ictx.lineWidth = 10;
+        console.log(this.playersfinishedclaiming)
+        for(let i = 0; i < this.players.length; i++){
+            ictx.beginPath();
+            ictx.arc(32.5, 57.5+70*i, 22.5, 0, 2*Math.PI)
+            ictx.strokeStyle = "#000";
+            if(this.gamestate == "claim"){
+                if(!this.playersfinishedclaiming[i]){
+                    ictx.strokeStyle = "#FFF";
+                }
+            }
+            ictx.fillStyle = this.players[i][2];
+            ictx.stroke();
+            ictx.fill();
         }
     }
 
