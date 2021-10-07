@@ -22,7 +22,7 @@ for(let i = 0; i < Object.keys(mapData).length; i++){
 
 class Game {
     constructor(){
-        this.players = []; // [socket, playernum, turnval]
+        this.players = []; // [socket, playernum, turnval, color]
         this.stateowners = []
         this.turn = 0;
         this.subturn = 0;
@@ -58,8 +58,12 @@ class Game {
                 if(adjacent){
                     this.subturn++;
                     if(this.subturn == this.players[this.turn][2]){
-                        this.turn = (this.turn + 1) % this.players.length;
+                        this.AdvanceTurn();
                         this.subturn = 0;
+                        if(Count(this.stateowners, this.turn) == 0){
+                            this.players[this.turn[2]] = 0
+                            this.AdvanceTurn();
+                        }
                         this.players[this.turn][2] = 1 + Math.floor(.25*Count(this.stateowners, this.turn));
                     }
                     this.BroadcastNewConquest(playernumber, index);
@@ -68,6 +72,13 @@ class Game {
         }
     }
     
+    AdvanceTurn(){
+        this.turn = (this.turn + 1) % this.players.length;
+        if(this.players[this.turn] == 0){
+            this.AdvanceTurn();
+        }
+    }
+
     BroadcastNewConquest(player, tile){
         let success = false;
         if(Math.random() < 0.4){
