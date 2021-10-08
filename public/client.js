@@ -3,7 +3,8 @@ const dom = {
     c: document.getElementById("canvas"),
     iconc: document.getElementById("iconcanvas"),
     turnsremainingtext: document.getElementById("turnsremainingtext"),
-    turnsremainingval: document.getElementById("turnsremainingval")
+    turnsremainingval: document.getElementById("turnsremainingval"),
+    nameplatecontainer: document.getElementById("nameplatecontainer"),
 }
 
 const ctx = dom.c.getContext("2d")
@@ -52,8 +53,11 @@ function InitSocketFunctions(){
         }
     })
     
-    socket.on("conquest", (player, tile, success, turn, subaction, maxsubactions) => {
+    socket.on("conquest", (player, tile, success, turn, subaction, maxsubactions, statecount, currentmaxsubactions) => {
         if(success){
+            for(let i = 0; i < maxsubactions.length; i++){
+                dom["" + i + "info"].innerText = "AP: " + maxsubactions[i] + "    States: " + statecount[i];
+            }
             game.stateowners[tile] = player;
             if(game.gamestate == "claim"){
                 game.playersfinishedclaiming[player] = true;
@@ -63,10 +67,10 @@ function InitSocketFunctions(){
             }
         }
         if(game.gamestate == "conquest"){
-            dom.turnsremainingval.innerText = maxsubactions - subaction;
+            dom.turnsremainingval.innerText = currentmaxsubactions - subaction;
             dom.turnsremainingtext.innerText = "Player " + turn + " Actions remaining:"
             game.turn = turn;
-            game.subturn = subaction;
+            console.log(game.turn);
         }
     });
 
@@ -76,6 +80,20 @@ function InitSocketFunctions(){
 
     socket.on("players", (players) =>{
         game.players = players;
+        if(players.length > dom.nameplatecontainer.childElementCount){
+            while(players.length > dom.nameplatecontainer.childElementCount){
+                let nameplatediv = document.createElement("div");
+                nameplatediv.classList.add("nameplate")
+                let name = document.createElement("p");
+                name.innerText = players[dom.nameplatecontainer.childElementCount][0];
+                nameplatediv.appendChild(name);
+                let info = document.createElement("p");
+                info.innerText = "AP: 1    States: 0";
+                nameplatediv.appendChild(info);
+                dom.nameplatecontainer.append(nameplatediv);
+                dom["" + players[dom.nameplatecontainer.childElementCount - 1][0] + "info"] = info;
+            }
+        }
     })
 }
 
@@ -95,6 +113,7 @@ class Game {
         this.player = 0;
         this.playersfinishedclaiming = [];
         this.stateowners = [];
+        this.turn = 0;
         this.players = []; // Playernum, subturnlimit, color
         this.gameInterval = setInterval(()=>{
             let temp = performance.now();
@@ -152,13 +171,17 @@ class Game {
             }
         }
         ictx.lineWidth = 10;
-        console.log(this.playersfinishedclaiming)
         for(let i = 0; i < this.players.length; i++){
             ictx.beginPath();
             ictx.arc(32.5, 57.5+70*i, 22.5, 0, 2*Math.PI)
             ictx.strokeStyle = "#000";
             if(this.gamestate == "claim"){
                 if(!this.playersfinishedclaiming[i]){
+                    ictx.strokeStyle = "#FFF";
+                }
+            }
+            if(this.gamestate == "conquest"){
+                if(this.turn == i){
                     ictx.strokeStyle = "#FFF";
                 }
             }

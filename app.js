@@ -29,6 +29,8 @@ class Game {
         this.claimnum = 0;
         this.gamestate = "claim";
         this.claimed = [];
+        this.statecounts = [];
+        this.maxsubactions = [];
         for(let i = 0; i < Object.keys(mapData["unitedstates"]).length; i++){
             this.stateowners.push(-1);
         }
@@ -95,7 +97,11 @@ class Game {
             }
         }
         for(let i = 0; i < this.players.length; i++){
-            this.players[i][0].emit("conquest", player, tile, success, this.turn, this.subturn, this.players[this.turn][2]);
+            this.statecounts[i] = Count(this.stateowners, i);
+            this.maxsubactions[i] = 1 + Math.floor(this.statecounts[i]*.25)
+        }
+        for(let i = 0; i < this.players.length; i++){
+            this.players[i][0].emit("conquest", player, tile, success, this.turn, this.subturn, this.maxsubactions, this.statecounts, this.players[this.turn][2]);
         }
     }
 
