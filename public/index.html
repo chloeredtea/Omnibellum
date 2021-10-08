@@ -11,7 +11,76 @@
     <script src="https://cdn.socket.io/4.2.0/socket.io.min.js" integrity="sha384-PiBR5S00EtOj2Lto9Uu81cmoyZqR57XcOna1oAuVuIEjzj0wpqDVfD0JA9eXlRsj" crossorigin="anonymous"></script>
     
     
-    <div class="flex-body">
+    <div id="roomselectcontainer" class="flex-body">
+      <div class="flex-column">
+        <div class="flex-row" id="topbar">
+          <input type="text" id="usernamesubmission" placeholder="Enter username...">
+          <button id="createroombutton" onclick="CreateRoom();">Create Room</button>
+        </div>
+        <div id="roomselectcontainerinner" class="flex-column">
+          <div class="flex-column" id="roomplatecontainer">
+            <button class="roomplate">
+              <p>Mapoids</p>
+              <div>
+                <p>USA</p>
+                <p> <img src="/assets/tinyicon.png"> 2/8</p>
+              </div>
+              <img src="assets/usstatesmapicon.png">
+            </button>
+            <button class="roomplate">
+              <p>Katecord</p>
+              <div>
+                <p>USA</p>
+                <p> <img src="/assets/tinyicon.png"> 3/5</p>
+              </div>
+              <img src="assets/usstatesmapicon.png">
+            </button>
+            <button class="roomplate">
+              <p>Etc</p>
+              <div>
+                <p>Etc</p>
+                <p> <img src="/assets/tinyicon.png"> Etc/Etc</p>
+              </div>
+              <img src="assets/usstatesmapicon.png">
+            </button>
+            <button class="roomplate">
+              <p>Etc</p>
+              <div>
+                <p>Etc</p>
+                <p> <img src="/assets/tinyicon.png"> Etc/Etc</p>
+              </div>
+              <img src="assets/usstatesmapicon.png">
+            </button>
+            <button class="roomplate">
+              <p>Etc</p>
+              <div>
+                <p>Etc</p>
+                <p> <img src="/assets/tinyicon.png"> Etc/Etc</p>
+              </div>
+              <img src="assets/usstatesmapicon.png">
+            </button>
+            <button class="roomplate">
+              <p>Etc</p>
+              <div>
+                <p>Etc</p>
+                <p> <img src="/assets/tinyicon.png"> Etc/Etc</p>
+              </div>
+              <img src="assets/usstatesmapicon.png">
+            </button>
+            <button class="roomplate">
+              <p>Etc</p>
+              <div>
+                <p>Etc</p>
+                <p> <img src="/assets/tinyicon.png"> Etc/Etc</p>
+              </div>
+              <img src="assets/usstatesmapicon.png">
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div id="ingamecontainer" class="flex-body">
       <div class="flex-row">
         <div id="chatbox">
 
@@ -37,9 +106,6 @@
         </div>
       </div>
     </div>
-    
-	  
-    
     
     <script src="client.js"></script>
   </body>

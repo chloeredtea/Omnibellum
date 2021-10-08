@@ -91,6 +91,7 @@ class Game {
         }
         if(success){
             this.stateowners[tile] = player;
+            this.players[this.turn][2] = 1 + Math.floor(.25*Count(this.stateowners, this.turn));
             if(Count(this.stateowners, this.turn) == 0){
                 this.players[this.turn][2] = 0
                 this.AdvanceTurn();

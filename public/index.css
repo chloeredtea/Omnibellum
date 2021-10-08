@@ -2,6 +2,17 @@ p {
     font-size: 20px;
     color: white;
 }
+
+button {
+    background-color: #F6F6F6;
+    cursor: pointer;  
+    transition: background-color .5s; 
+}
+
+button:hover {
+    background-color: #DDD;
+}
+
 .flex-row {
     flex-direction: row;
     display: flex;
@@ -89,4 +100,47 @@ p {
     padding-top: 0;
     margin-bottom: 0;
     padding-bottom: 0;
+}
+
+#ingamecontainer {
+    display: none;
+}
+
+#roomselectcontainerinner {
+    height: 600px;
+    width: 650px;
+    overflow: auto;
+}
+
+#roomselectcontainer p{
+    color: black
+}
+
+.roomplate {
+    border-style: solid;
+    border-width: 2px;
+    border-color: black;
+    margin-top: 10px;
+    width: 600px;
+    height: 120px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.roomplate img {
+    height: 100px;
+    width: 150px;
+}
+
+.roomplate p img {
+    height: 20px;
+    width: 20px;
+}
+
+#topbar {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
 }

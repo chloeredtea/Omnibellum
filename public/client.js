@@ -5,6 +5,8 @@ const dom = {
     turnsremainingtext: document.getElementById("turnsremainingtext"),
     turnsremainingval: document.getElementById("turnsremainingval"),
     nameplatecontainer: document.getElementById("nameplatecontainer"),
+    ingamelargecontainer: document.getElementById("ingamecontainer"),
+    roomslargecontainer: document.getElementById("roomselectcontainer"),
 }
 
 const ctx = dom.c.getContext("2d")
@@ -201,6 +203,10 @@ document.body.onload = () => {
     Init();
 }
 
+function CreateRoom(){
+    dom.roomslargecontainer.style.display = "none";
+    dom.ingamelargecontainer.style.display = "flex";
+}
 
 // determine if point is inside polygon
 function pointinside(vertx, verty, testx, testy) {
