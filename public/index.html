@@ -80,6 +80,44 @@
       </div>
     </div>
     
+    <div id="createroomcontainer" class="flex-body">
+      <div id="createroominputs" class="flex-column">
+        <div>
+          <h2>Name</h2>
+          <input type="text" id="createroomname">
+        </div>
+        <div>
+          <h2>Password (optional)</h2>
+          <input type="text" id="createroompassword">
+        </div>
+        <div>
+          <h2>Max Players</h2>
+          <select id="createroommaxplayers">
+            <option value="8">8</option>
+            <option value="8">7</option>
+            <option value="8">6</option>
+            <option value="8">5</option>
+            <option value="8">4</option>
+            <option value="8">3</option>
+            <option value="8">2</option>
+          </select>
+        </div>
+        <div>
+          <button id="createroomconfirm" onclick="CreateRoomSubmit();">CREATE</button>
+        </div>
+      </div>
+      <div id="createroommapselect" class="flex-column">
+        <img src="/assets/usstatesmapicon.png">
+        <select id="createroommap">
+          <option value="usstates">US States</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="inroomcontainer" class="flex-body">
+      
+    </div>
+
     <div id="ingamecontainer" class="flex-body">
       <div class="flex-row">
         <div id="chatbox">
@@ -107,6 +145,8 @@
       </div>
     </div>
     
+
+
     <script src="client.js"></script>
   </body>
 </html>

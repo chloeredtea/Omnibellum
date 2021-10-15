@@ -40,15 +40,15 @@ class Game {
         if(this.gamestate == "claim"){
             if(!this.claimed[playernumber] && this.stateowners[index] == -1){
                 this.claimnum++;
+                this.claimed[playernumber] = true;
+                this.BroadcastNewConquest(playernumber, index);
                 if(this.claimnum == this.players.length){
                     this.gamestate = "conquest";
                     this.BroadcastNewGamestate();
                 }
-                this.claimed[playernumber] = true;
-                this.BroadcastNewConquest(playernumber, index);
             }
         }
-        else if (this.gamestate = "conquest"){
+        else if (this.gamestate == "conquest"){
             if(playernumber == this.turn){
                 let adjacent = false;
                 for(let i = 0; i < mapData["unitedstates"][index + 2][8].length; i++){
@@ -91,10 +91,11 @@ class Game {
         }
         if(success){
             this.stateowners[tile] = player;
-            this.players[this.turn][2] = 1 + Math.floor(.25*Count(this.stateowners, this.turn));
-            if(Count(this.stateowners, this.turn) == 0){
-                this.players[this.turn][2] = 0
-                this.AdvanceTurn();
+            if(this.gamestate == "conquest"){
+                if(Count(this.stateowners, this.turn) == 0){
+                    this.players[this.turn][2] = 0
+                    this.AdvanceTurn();
+                }
             }
         }
         for(let i = 0; i < this.players.length; i++){

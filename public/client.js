@@ -7,6 +7,8 @@ const dom = {
     nameplatecontainer: document.getElementById("nameplatecontainer"),
     ingamelargecontainer: document.getElementById("ingamecontainer"),
     roomslargecontainer: document.getElementById("roomselectcontainer"),
+    createroomlargecontainer: document.getElementById("createroomcontainer"),
+    inroomlargecontainer: document.getElementById("inroomcontainer"),
 }
 
 const ctx = dom.c.getContext("2d")
@@ -205,7 +207,12 @@ document.body.onload = () => {
 
 function CreateRoom(){
     dom.roomslargecontainer.style.display = "none";
-    dom.ingamelargecontainer.style.display = "flex";
+    dom.createroomlargecontainer.style.display = "flex";
+}
+
+function CreateRoomSubmit(){
+    dom.createroomlargecontainer.style.display = "none";
+    dom.inroomlargecontainer.style.display = "flex";
 }
 
 // determine if point is inside polygon
