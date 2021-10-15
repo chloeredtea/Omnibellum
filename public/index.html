@@ -82,6 +82,7 @@
     
     <div id="createroomcontainer" class="flex-body">
       <div id="createroominputs" class="flex-column">
+        <button onclick="ReturnToRoomSelect()">Back</button>
         <div>
           <h2>Name</h2>
           <input type="text" id="createroomname">
@@ -115,7 +116,64 @@
     </div>
 
     <div id="inroomcontainer" class="flex-body">
-      
+      <div id="roominfo" class="flex-column">
+        <button onclick="ReturnToRoomSelect();">LEAVE</button>
+        <h2>Lobby name</h2>
+        <div class="namebox">
+          <div class="colorbox" id="inroomcolor1"></div>
+          <p id="inroomname1">Chloe</p>
+        </div>
+        <div class="namebox">
+          <div class="colorbox" id="inroomcolor2"></div>
+          <p id="inroomname2">Kate</p>
+        </div>
+        <div class="namebox">
+          <div class="colorbox" id="inroomcolor3"></div>
+          <p id="inroomname3">Felix</p>
+        </div>
+        <div class="namebox">
+          <div class="colorbox" id="inroomcolor4"></div>
+          <p id="inroomname4"></p>
+        </div>
+        <div class="namebox">
+          <div class="colorbox" id="inroomcolor5"></div>
+          <p id="inroomname5"></p>
+        </div>
+        <div class="namebox">
+          <div class="colorbox" id="inroomcolor6"></div>
+          <p id="inroomname6"></p>
+        </div>
+        <div class="namebox">
+          <div class="colorbox" id="inroomcolor7"></div>
+          <p id="inroomname7"></p>
+        </div>
+        <div class="namebox">
+          <div class="colorbox" id="inroomcolor8"></div>
+          <p id="inroomname8"></p>
+        </div>
+      </div>
+      <div id="roominfomap" class="flex-column">
+        <div class="flex-row">
+          <img src="assets/tinyicon.png"> <p>3/5</p>
+        </div>
+        <img src="assets/usstatesmapicon.png">
+        <div id="colorbuttons">
+          <div id="colorbuttons1">
+            <button class="colorbutton" id="redbutton"></button>
+            <button class="colorbutton" id="orangebutton"></button>
+            <button class="colorbutton" id="yellowbutton"></button>
+            <button class="colorbutton" id="greenbutton"></button>
+            <button class="colorbutton" id="bluebutton"></button>
+          </div>
+          <div id="colorbuttons2">
+            <button class="colorbutton" id="purplebutton"></button>
+            <button class="colorbutton" id="pinkbutton"></button>
+            <button class="colorbutton" id="brownbutton"></button>
+            <button class="colorbutton" id="tealbutton"></button>
+          </div>
+        </div>
+        <button onclick="StartGame();">START</button>
+      </div>
     </div>
 
     <div id="ingamecontainer" class="flex-body">

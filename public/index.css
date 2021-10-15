@@ -1,7 +1,4 @@
-p {
-    font-size: 20px;
-    color: white;
-}
+
 
 button {
     background-color: #F6F6F6;
@@ -106,6 +103,11 @@ button:hover {
     display: none;
 }
 
+#ingamecontainer p {
+    font-size: 20px;
+    color: white;
+}
+
 #roomselectcontainerinner {
     height: 600px;
     width: 650px;
@@ -151,4 +153,42 @@ button:hover {
 
 #inroomcontainer {
     display: none;
+}
+
+.colorbutton {
+    height: 40px;
+    width: 40px;
+    margin-left: 5px;
+    margin-top: 5px;
+}
+
+#colorbuttons1 {
+    text-align: center;
+}
+
+#colorbuttons2 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+#roominfo {
+    margin-right: 80px;
+}
+
+.colorbox{
+    width: 40px;
+    height: 40px;
+    background-color: red;
+    margin-right: 10px;
+}
+
+.namebox{
+    display: flex;
+    flex-direction: row;
+    margin-top: 10px;
+    height: 50px;
+}
+
+#roominfomap {
+    justify-content: space-around;
 }

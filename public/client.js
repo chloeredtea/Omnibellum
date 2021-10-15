@@ -215,6 +215,17 @@ function CreateRoomSubmit(){
     dom.inroomlargecontainer.style.display = "flex";
 }
 
+function ReturnToRoomSelect(){
+    dom.createroomlargecontainer.style.display = "none";
+    dom.inroomlargecontainer.style.display = "none";
+    dom.roomslargecontainer.style.display = "flex";
+}
+
+function StartGame(){
+    dom.inroomlargecontainer.style.display = "none";
+    dom.ingamelargecontainer.style.display = "flex";
+}
+
 // determine if point is inside polygon
 function pointinside(vertx, verty, testx, testy) {
     let up = false, down = false, left = false, right = false;
