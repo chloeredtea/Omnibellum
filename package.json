@@ -11,10 +11,8 @@
     "url": "omnibellum"
   },
   "author": "chloeredtea",
-  "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
-    "pngjs": "^6.0.0",
     "socket.io": "^4.2.0"
   }
 }

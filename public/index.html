@@ -19,62 +19,6 @@
         </div>
         <div id="roomselectcontainerinner" class="flex-column">
           <div class="flex-column" id="roomplatecontainer">
-            <button class="roomplate">
-              <p>Mapoids</p>
-              <div>
-                <p>USA</p>
-                <p> <img src="/assets/tinyicon.png"> 2/8</p>
-              </div>
-              <img src="assets/usstatesmapicon.png">
-            </button>
-            <button class="roomplate">
-              <p>Katecord</p>
-              <div>
-                <p>USA</p>
-                <p> <img src="/assets/tinyicon.png"> 3/5</p>
-              </div>
-              <img src="assets/usstatesmapicon.png">
-            </button>
-            <button class="roomplate">
-              <p>Etc</p>
-              <div>
-                <p>Etc</p>
-                <p> <img src="/assets/tinyicon.png"> Etc/Etc</p>
-              </div>
-              <img src="assets/usstatesmapicon.png">
-            </button>
-            <button class="roomplate">
-              <p>Etc</p>
-              <div>
-                <p>Etc</p>
-                <p> <img src="/assets/tinyicon.png"> Etc/Etc</p>
-              </div>
-              <img src="assets/usstatesmapicon.png">
-            </button>
-            <button class="roomplate">
-              <p>Etc</p>
-              <div>
-                <p>Etc</p>
-                <p> <img src="/assets/tinyicon.png"> Etc/Etc</p>
-              </div>
-              <img src="assets/usstatesmapicon.png">
-            </button>
-            <button class="roomplate">
-              <p>Etc</p>
-              <div>
-                <p>Etc</p>
-                <p> <img src="/assets/tinyicon.png"> Etc/Etc</p>
-              </div>
-              <img src="assets/usstatesmapicon.png">
-            </button>
-            <button class="roomplate">
-              <p>Etc</p>
-              <div>
-                <p>Etc</p>
-                <p> <img src="/assets/tinyicon.png"> Etc/Etc</p>
-              </div>
-              <img src="assets/usstatesmapicon.png">
-            </button>
           </div>
         </div>
       </div>
@@ -95,12 +39,12 @@
           <h2>Max Players</h2>
           <select id="createroommaxplayers">
             <option value="8">8</option>
-            <option value="8">7</option>
-            <option value="8">6</option>
-            <option value="8">5</option>
-            <option value="8">4</option>
-            <option value="8">3</option>
-            <option value="8">2</option>
+            <option value="7">7</option>
+            <option value="6">6</option>
+            <option value="5">5</option>
+            <option value="4">4</option>
+            <option value="3">3</option>
+            <option value="2">2</option>
           </select>
         </div>
         <div>
@@ -108,9 +52,9 @@
         </div>
       </div>
       <div id="createroommapselect" class="flex-column">
-        <img src="/assets/usstatesmapicon.png">
+        <img src="/assets/unitedstates.png">
         <select id="createroommap">
-          <option value="usstates">US States</option>
+          <option value="unitedstates">US States</option>
         </select>
       </div>
     </div>
@@ -118,18 +62,18 @@
     <div id="inroomcontainer" class="flex-body">
       <div id="roominfo" class="flex-column">
         <button onclick="ReturnToRoomSelect();">LEAVE</button>
-        <h2>Lobby name</h2>
+        <h2 id="roomname">Lobby name</h2>
         <div class="namebox">
           <div class="colorbox" id="inroomcolor1"></div>
-          <p id="inroomname1">Chloe</p>
+          <p id="inroomname1"></p>
         </div>
         <div class="namebox">
           <div class="colorbox" id="inroomcolor2"></div>
-          <p id="inroomname2">Kate</p>
+          <p id="inroomname2"></p>
         </div>
         <div class="namebox">
           <div class="colorbox" id="inroomcolor3"></div>
-          <p id="inroomname3">Felix</p>
+          <p id="inroomname3"></p>
         </div>
         <div class="namebox">
           <div class="colorbox" id="inroomcolor4"></div>
@@ -156,20 +100,20 @@
         <div class="flex-row">
           <img src="assets/tinyicon.png"> <p>3/5</p>
         </div>
-        <img src="assets/usstatesmapicon.png">
+        <img src="assets/unitedstates.png">
         <div id="colorbuttons">
           <div id="colorbuttons1">
-            <button class="colorbutton" id="redbutton"></button>
-            <button class="colorbutton" id="orangebutton"></button>
-            <button class="colorbutton" id="yellowbutton"></button>
-            <button class="colorbutton" id="greenbutton"></button>
-            <button class="colorbutton" id="bluebutton"></button>
+            <button class="colorbutton" id="colorbutton1" onclick="ChangeColor(0);"></button>
+            <button class="colorbutton" id="colorbutton2" onclick="ChangeColor(1);"></button>
+            <button class="colorbutton" id="colorbutton3" onclick="ChangeColor(2);"></button>
+            <button class="colorbutton" id="colorbutton4" onclick="ChangeColor(3);"></button>
+            <button class="colorbutton" id="colorbutton5" onclick="ChangeColor(4);"></button>
           </div>
           <div id="colorbuttons2">
-            <button class="colorbutton" id="purplebutton"></button>
-            <button class="colorbutton" id="pinkbutton"></button>
-            <button class="colorbutton" id="brownbutton"></button>
-            <button class="colorbutton" id="tealbutton"></button>
+            <button class="colorbutton" id="colorbutton6" onclick="ChangeColor(5);"></button>
+            <button class="colorbutton" id="colorbutton7" onclick="ChangeColor(6);"></button>
+            <button class="colorbutton" id="colorbutton8" onclick="ChangeColor(7);"></button>
+            <button class="colorbutton" id="colorbutton9" onclick="ChangeColor(8);"></button>
           </div>
         </div>
         <button onclick="StartGame();">START</button>

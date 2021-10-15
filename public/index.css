@@ -178,7 +178,6 @@ button:hover {
 .colorbox{
     width: 40px;
     height: 40px;
-    background-color: red;
     margin-right: 10px;
 }
 
@@ -191,4 +190,40 @@ button:hover {
 
 #roominfomap {
     justify-content: space-around;
+}
+
+#colorbutton1{
+    background-color:#e6194B
+}
+
+#colorbutton2{
+    background-color:#3cb44b
+}
+
+#colorbutton3{
+    background-color:#ffe119
+}
+
+#colorbutton4{
+    background-color:#42d4f4
+}
+
+#colorbutton5{
+    background-color:#f58231
+}
+
+#colorbutton6{
+    background-color:#911eb4
+}
+
+#colorbutton7{
+    background-color:#f032e6
+}
+
+#colorbutton8{
+    background-color:#9A6324
+}
+
+#colorbutton9{
+    background-color:#000075
 }
