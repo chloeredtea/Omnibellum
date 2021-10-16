@@ -131,6 +131,20 @@ class Game {
             this.players[i][0].emit("players", sendarray);
         }
     }
+
+    RemovePlayer(playernum){
+        // Add the player's color back to the pool
+        this.unclaimedcolors.push(this.players[playernum][3])
+        this.unclaimedcolors.sort();
+        this.players.splice(playernum, 1);
+
+        // Adjust player numbers
+        for(let i = 0; i < this.players.length; i++){
+            this.players[i][0].playernum = i;
+            this.players[i][1] = i;
+        }
+        this.BroadcastPlayers();
+    }
 }
 
 
@@ -139,7 +153,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 let roomnum = 0;
 
 io.on('connection', socket => {
-
     socket.on("createroom", (roomname, roompassword, maxplayers, roommap) => {
         if(maxplayers < 9 && maxplayers > 1 && Math.round(maxplayers) == maxplayers){
             socket.game = new Game(roomname, roompassword, maxplayers, roommap, roomnum);
@@ -180,6 +193,32 @@ io.on('connection', socket => {
             roomemitdata.push([gamelist[i].name, gamelist[i].players.length, gamelist[i].maxplayers, gamelist[i].map, gamelist[i].roomnum]);
         }
         socket.emit("roomlist", roomemitdata);
+    })
+
+    socket.on("leave", ()=>{
+        socket.game.RemovePlayer(socket.playernum);
+        if(socket.game.players.length == 0){
+            for(let i = 0; i < gamelist.length; i++){
+                if(socket.game == gamelist[i]){
+                    gamelist.splice(i, 1);
+                    break;
+                }
+            }
+        }
+        socket.game = null;
+    })
+
+    socket.on("disconnect", ()=>{
+        socket.game.RemovePlayer(socket.playernum);
+        if(socket.game.players.length == 0){
+            for(let i = 0; i < gamelist.length; i++){
+                if(socket.game == gamelist[i]){
+                    gamelist.splice(i, 1);
+                    break;
+                }
+            }
+        }
+        socket.game = null;
     })
 
     socket.on("maprequest", (mapname) => {

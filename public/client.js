@@ -91,7 +91,6 @@ function InitSocketFunctions(){
             dom.turnsremainingval.innerText = currentmaxsubactions - subaction;
             dom.turnsremainingtext.innerText = "Player " + turn + " Actions remaining:"
             game.turn = turn;
-            console.log(game.turn);
         }
     });
 
@@ -100,7 +99,6 @@ function InitSocketFunctions(){
     })
 
     socket.on("players", (players) =>{
-        console.log(":)")
         game.players = players;
         game.UpdatePlayers();
     })
@@ -279,9 +277,12 @@ class Game {
             }
         }
         else if(this.gamestate == "roomlobby"){
-            for(let i = 0; i < 9; i++){
+            for(let i = 0; i < 8; i++){
                 document.getElementById("colorbutton" + (i+1)).style.visibility = "visible";
+                document.getElementById("inroomname" + (i+1)).innerHTML = "";
+                document.getElementById("inroomcolor" + (i+1)).style.backgroundColor = "transparent";
             }
+            document.getElementById("colorbutton9").style.visibility = "visible";
             for(let i = 0; i < this.players.length; i++){
                 document.getElementById("inroomname" + (i+1)).innerHTML = this.players[i][0];
                 document.getElementById("inroomcolor" + (i+1)).style.backgroundColor = colors[this.players[i][2]];
@@ -310,6 +311,8 @@ function CreateRoomSubmit(){
 }
 
 function ReturnToRoomSelect(){
+    game.gamestate = "roomselect";
+    Leave();
     dom.createroomlargecontainer.style.display = "none";
     dom.inroomlargecontainer.style.display = "none";
     dom.roomslargecontainer.style.display = "flex";
@@ -318,6 +321,11 @@ function ReturnToRoomSelect(){
 function StartGame(){
     dom.inroomlargecontainer.style.display = "none";
     dom.ingamelargecontainer.style.display = "flex";
+}
+
+function Leave(){
+    game.gamestate = "roomselect";
+    socket.emit("leave");
 }
 
 // determine if point is inside polygon
