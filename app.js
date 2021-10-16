@@ -88,8 +88,6 @@ class Game {
                         this.players[this.turn][2] = 1 + Math.floor(.25*Count(this.stateowners, this.turn));
                     }
                     this.BroadcastNewConquest(playernumber, index);
-                    console.log(this.stateowners);
-                    console.log(Count(this.stateowners, playernumber), this.stateowners.length)
                     if(Count(this.stateowners, playernumber) == this.stateowners.length){
                         this.gamestate = "endscreen";
                         this.winner = playernumber;
@@ -102,8 +100,17 @@ class Game {
     
     AdvanceTurn(){
         this.turn = (this.turn + 1) % this.players.length;
+        if(Count(this.stateowners, this.turn) == 0){
+            this.players[this.turn][2] = 0
+        }
         if(this.players[this.turn][2] == 0){
             this.AdvanceTurn();
+        }
+    }
+
+    BroadcastNewTurn(){
+        for(let i = 0; i < this.players.length; i++){
+            this.players[i][0].emit("turn", this.turn);
         }
     }
 
@@ -155,17 +162,36 @@ class Game {
     }
 
     RemovePlayer(playernum){
-        // Add the player's color back to the pool
-        this.unclaimedcolors.push(this.players[playernum][3])
-        this.unclaimedcolors.sort();
-        this.players.splice(playernum, 1);
+        if(this.gamestate == "roomlobby"){
+            // Add the player's color back to the pool
+            this.unclaimedcolors.push(this.players[playernum][3])
+            this.unclaimedcolors.sort();
+            this.players.splice(playernum, 1);
 
-        // Adjust player numbers
-        for(let i = 0; i < this.players.length; i++){
-            this.players[i][0].playernum = i;
-            this.players[i][1] = i;
+            // Adjust player numbers
+            for(let i = 0; i < this.players.length; i++){
+                this.players[i][0].playernum = i;
+                this.players[i][1] = i;
+            }
+            this.BroadcastPlayers();
         }
-        this.BroadcastPlayers();
+        else if(this.gamestate == "claim"){
+            this.claimed[playernum] = true;
+            this.players[playernum][2] = 0;
+            claimnum++;
+            if(this.claimnum == this.players.length){
+                this.gamestate = "conquest";
+                this.BroadcastNewGamestate();
+            }
+        }
+        else if(this.gamestate == "conquest"){
+            this.players[playernum][2] = 0;
+            if(this.turn == playernum){
+                this.subturn = 0;
+                this.AdvanceTurn();
+            }
+            this.BroadcastNewTurn();
+        }
     }
 }
 
@@ -198,13 +224,15 @@ io.on('connection', socket => {
     })
 
     socket.on("changecolor", (val) =>{
-        if(socket.game.gamestate == "roomlobby"){
-            if(socket.game.unclaimedcolors.includes(val)){
-                socket.game.unclaimedcolors.splice(socket.game.unclaimedcolors.indexOf(val), 1);
-                socket.game.unclaimedcolors.push(socket.game.players[socket.playernum][3])
-                socket.game.players[socket.playernum][3] = val;
-                socket.game.unclaimedcolors.sort();
-                socket.game.BroadcastPlayers();
+        if(socket.game != null){
+            if(socket.game.gamestate == "roomlobby"){
+                if(socket.game.unclaimedcolors.includes(val)){
+                    socket.game.unclaimedcolors.splice(socket.game.unclaimedcolors.indexOf(val), 1);
+                    socket.game.unclaimedcolors.push(socket.game.players[socket.playernum][3])
+                    socket.game.players[socket.playernum][3] = val;
+                    socket.game.unclaimedcolors.sort();
+                    socket.game.BroadcastPlayers();
+                }
             }
         }
     })
@@ -250,11 +278,15 @@ io.on('connection', socket => {
     })
 
     socket.on("start", ()=>{
-        socket.game.Start();
+        if(socket.game != null){
+            socket.game.Start();
+        }
     })
 
     socket.on("attack", (index) => {
-        socket.game.Attack(index, socket.playernum)
+        if(socket.game != null){
+            socket.game.Attack(index, socket.playernum)
+        }
     })
 })
 

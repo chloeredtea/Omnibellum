@@ -76,6 +76,14 @@ function InitSocketFunctions(){
         }
     })
     
+    socket.on("turn", (turn) =>{
+        if(game.gamestate == "conquest"){
+            dom.turnsremainingval.innerText = "?";
+            dom.turnsremainingtext.innerText = "Player " + turn + " Actions remaining:"
+            game.turn = turn;
+        }
+    })
+
     socket.on("conquest", (player, tile, success, turn, subaction, maxsubactions, statecount, currentmaxsubactions) => {
         if(success){
             for(let i = 0; i < maxsubactions.length; i++){
@@ -208,7 +216,7 @@ class Game {
         }
         else if(this.gamestate == "roomselect"){
             this.tick++;
-            if(this.tick > 300){
+            if(this.tick > 60){
                 this.tick = 0;
                 this.RefreshRooms();
             }
