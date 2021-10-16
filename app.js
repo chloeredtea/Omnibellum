@@ -45,6 +45,14 @@ class Game {
         }
     }
 
+    Start(){
+        for(let i = 0; i < this.players.length; i++){
+            this.players[i][0].emit("mapdata", spritesheets[this.map], mapData[this.map])
+        }
+        this.gamestate = "claim";
+        this.BroadcastNewGamestate();
+    }
+
     Attack(index, playernumber){
         if(this.gamestate == "claim"){
             if(!this.claimed[playernumber] && this.stateowners[index] == -1){
@@ -190,42 +198,49 @@ io.on('connection', socket => {
     socket.on("refreshrooms", ()=>{
         let roomemitdata = [];
         for(let i = 0; i < gamelist.length; i++){
-            roomemitdata.push([gamelist[i].name, gamelist[i].players.length, gamelist[i].maxplayers, gamelist[i].map, gamelist[i].roomnum]);
+            if(gamelist[i].gamestate == "roomlobby"){
+                roomemitdata.push([gamelist[i].name, gamelist[i].players.length, gamelist[i].maxplayers, gamelist[i].map, gamelist[i].roomnum]);
+            }
         }
         socket.emit("roomlist", roomemitdata);
     })
 
     socket.on("leave", ()=>{
-        socket.game.RemovePlayer(socket.playernum);
-        if(socket.game.players.length == 0){
-            for(let i = 0; i < gamelist.length; i++){
-                if(socket.game == gamelist[i]){
-                    gamelist.splice(i, 1);
-                    break;
+        if(socket.game != null){
+            socket.game.RemovePlayer(socket.playernum);
+            if(socket.game.players.length == 0){
+                for(let i = 0; i < gamelist.length; i++){
+                    if(socket.game == gamelist[i]){
+                        gamelist.splice(i, 1);
+                        break;
+                    }
                 }
             }
+            socket.game = null;
         }
-        socket.game = null;
     })
 
     socket.on("disconnect", ()=>{
-        socket.game.RemovePlayer(socket.playernum);
-        if(socket.game.players.length == 0){
-            for(let i = 0; i < gamelist.length; i++){
-                if(socket.game == gamelist[i]){
-                    gamelist.splice(i, 1);
-                    break;
+        if(socket.game != null){
+            socket.game.RemovePlayer(socket.playernum);
+            if(socket.game.players.length == 0){
+                for(let i = 0; i < gamelist.length; i++){
+                    if(socket.game == gamelist[i]){
+                        gamelist.splice(i, 1);
+                        break;
+                    }
                 }
             }
+            socket.game = null;
         }
-        socket.game = null;
     })
 
-    socket.on("maprequest", (mapname) => {
-        socket.emit("mapresponse", spritesheets[mapname], mapData[mapname])
+    socket.on("start", ()=>{
+        socket.game.Start();
     })
+
     socket.on("attack", (index) => {
-        socket.game.Attack(index, socket.playernumber)
+        socket.game.Attack(index, socket.playernum)
     })
 })
 

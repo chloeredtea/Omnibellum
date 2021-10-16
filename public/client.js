@@ -56,7 +56,7 @@ function InitSocketFunctions(){
     socket.on("playernum", (playernum) => {
         game.player = playernum;
     })
-    socket.on("mapresponse", (spritesheet, metadata) => {
+    socket.on("mapdata", (spritesheet, metadata) => {
         game.spritesheet.width = metadata[0] + 0;
         game.spritesheet.height = metadata[1] + 0;
         let timg = new Image();
@@ -96,6 +96,11 @@ function InitSocketFunctions(){
 
     socket.on("gamestate", (gamestate) => {
         game.gamestate = gamestate;
+        if(gamestate == "claim"){
+            dom.inroomlargecontainer.style.display = "none";
+            dom.ingamelargecontainer.style.display = "flex";
+        }
+        game.UpdatePlayers();
     })
 
     socket.on("players", (players) =>{
@@ -215,7 +220,7 @@ class Game {
             if(this.metadata != undefined){
                 for(let i = 0; i < this.metadata.length; i++){
                     if(this.stateowners[i] != -1){
-                        this.sctx.fillStyle = this.players[this.stateowners[i]][2];
+                        this.sctx.fillStyle = colors[this.players[this.stateowners[i]][2]];
                         this.sctx.fillRect(0, this.metadata[i][5] - 1, this.spritesheet.width, this.metadata[i][2]);
                     }
                     ctx.drawImage(this.spritesheet, 0, this.metadata[i][5] - 1, this.metadata[i][1], this.metadata[i][2], this.metadata[i][3], this.metadata[i][4], this.metadata[i][1], this.metadata[i][2]);
@@ -236,18 +241,13 @@ class Game {
                         ictx.strokeStyle = "#FFF";
                     }
                 }
-                ictx.fillStyle = this.players[i][2];
+                ictx.fillStyle = colors[this.players[i][2]];
                 ictx.stroke();
                 ictx.fill();
             }
         }
 
     }
-
-    RequestMap(){
-        socket.emit("maprequest", this.mapname);
-    }
-
     RefreshRooms(){
         socket.emit("refreshrooms");
     }
@@ -319,6 +319,7 @@ function ReturnToRoomSelect(){
 }
 
 function StartGame(){
+    socket.emit("start")
     dom.inroomlargecontainer.style.display = "none";
     dom.ingamelargecontainer.style.display = "flex";
 }
