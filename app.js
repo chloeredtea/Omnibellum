@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const socket = require('socket.io');
 const fs = require("fs");
+const { threadId } = require('worker_threads');
 
 const PORT = 3000 || process.env.PORT
 
@@ -31,6 +32,7 @@ class Game {
         this.roomnum = roomnum_
         this.unclaimedcolors = [1, 2, 3, 4, 5, 6, 7, 8];
         
+        this.winner = null;
         this.players = []; // [socket, playernum, turnval, color]
         this.stateowners = [];
         this.turn = 0;
@@ -40,7 +42,7 @@ class Game {
         this.claimed = [];
         this.statecounts = [];
         this.maxsubactions = [];
-        for(let i = 0; i < Object.keys(mapData[this.map]).length; i++){
+        for(let i = 2; i < Object.keys(mapData[this.map]).length; i++){
             this.stateowners.push(-1);
         }
     }
@@ -86,6 +88,13 @@ class Game {
                         this.players[this.turn][2] = 1 + Math.floor(.25*Count(this.stateowners, this.turn));
                     }
                     this.BroadcastNewConquest(playernumber, index);
+                    console.log(this.stateowners);
+                    console.log(Count(this.stateowners, playernumber), this.stateowners.length)
+                    if(Count(this.stateowners, playernumber) == this.stateowners.length){
+                        this.gamestate = "endscreen";
+                        this.winner = playernumber;
+                        this.BroadcastNewGamestate();
+                    }
                 }
             }
         }
@@ -127,6 +136,11 @@ class Game {
     BroadcastNewGamestate(){
         for(let i = 0; i < this.players.length; i++){
             this.players[i][0].emit("gamestate", this.gamestate);
+        }
+        if(this.gamestate == "endscreen"){
+            for(let i = 0; i < this.players.length; i++){
+                this.players[i][0].emit("winner", this.winner);
+            }
         }
     }
 

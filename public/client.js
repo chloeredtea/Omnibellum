@@ -14,6 +14,8 @@ const dom = {
     passwordinput: document.getElementById("createroompassword"),
     maxplayerval: document.getElementById("createroommaxplayers"),
     mapselectval: document.getElementById("createroommap"),
+    endscreenlargecontainer: document.getElementById("endscreencontainer"),
+    winnerdisplay: document.getElementById("winner"),
 }
 
 const colors = [
@@ -103,8 +105,17 @@ function InitSocketFunctions(){
         game.UpdatePlayers();
     })
 
+    socket.on("winner", (winner) =>{
+        game.winner = winner;
+        game.highlightedstate = null;
+        dom.winnerdisplay.innerHTML = winner + " wins!";
+        dom.endscreenlargecontainer.style.display = "flex";
+    })
+
     socket.on("players", (players) =>{
-        game.players = players;
+        if(game.gamestate != "endscreen"){
+            game.players = players;
+        }
         game.UpdatePlayers();
     })
 
@@ -153,6 +164,7 @@ class Game {
         this.gamestate = "roomselect";
         this.highlightedstate = null;
         this.player = 0;
+        this.winner = null;
         this.playersfinishedclaiming = [];
         this.stateowners = [];
         this.turn = 0;
@@ -204,7 +216,7 @@ class Game {
     }
 
     Draw(){
-        if(this.gamestate == "claim" || this.gamestate == "conquest"){
+        if(this.gamestate == "claim" || this.gamestate == "conquest" || this.gamestate == "endscreen"){
             ctx.clearRect(0, 0, dom.c.width, dom.c.height);
             if(this.highlightedstate != null){
                 this.sctx.fillStyle = "#FFF";
@@ -327,6 +339,16 @@ function StartGame(){
 function Leave(){
     game.gamestate = "roomselect";
     socket.emit("leave");
+}
+
+function LeaveFinishedGame(){
+    game.gamestate = "roomselect";
+    Leave();
+    dom.ingamelargecontainer.style.display = "none";
+    dom.endscreenlargecontainer.style.display = "none";
+    dom.roomslargecontainer.style.display = "flex";
+    clearInterval(game.gameInterval);
+    game = new Game();
 }
 
 // determine if point is inside polygon

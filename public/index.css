@@ -227,3 +227,13 @@ button:hover {
 #colorbutton9{
     background-color:#000075
 }
+
+#endscreencontainer{
+    width: 400px;
+    background-color: pink;
+    position: absolute;
+    display: none;
+    top: 250px;
+    left: 50%;
+    transform: translate(-50%, 0);
+}
