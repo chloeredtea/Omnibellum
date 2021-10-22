@@ -16,6 +16,7 @@ const dom = {
     mapselectval: document.getElementById("createroommap"),
     endscreenlargecontainer: document.getElementById("endscreencontainer"),
     winnerdisplay: document.getElementById("winner"),
+    name: document.getElementById("usernamesubmission"),
 }
 
 const colors = [
@@ -307,7 +308,7 @@ class Game {
     }
 
     JoinRoom(id){
-        socket.emit("joinroom", id);
+        socket.emit("joinroom", id, dom.name.value);
         dom.roomslargecontainer.style.display = "none";
         dom.inroomlargecontainer.style.display = "flex";
         this.gamestate = "roomlobby";
@@ -320,7 +321,7 @@ class Game {
                     let nameplatediv = document.createElement("div");
                     nameplatediv.classList.add("nameplate")
                     let name = document.createElement("p");
-                    name.innerText = this.players[dom.nameplatecontainer.childElementCount][0];
+                    name.innerText = this.players[dom.nameplatecontainer.childElementCount][5];
                     nameplatediv.appendChild(name);
                     let info = document.createElement("p");
                     info.innerText = "AP: 1    States: 0";
@@ -338,7 +339,7 @@ class Game {
             }
             document.getElementById("colorbutton9").style.visibility = "visible";
             for(let i = 0; i < this.players.length; i++){
-                document.getElementById("inroomname" + (i+1)).innerHTML = this.players[i][0];
+                document.getElementById("inroomname" + (i+1)).innerHTML = this.players[i][5];
                 document.getElementById("inroomcolor" + (i+1)).style.backgroundColor = colors[this.players[i][2]];
                 document.getElementById("colorbutton" + (this.players[i][2]+1)).style.visibility = "hidden";
             }
@@ -360,7 +361,7 @@ function CreateRoom(){
 function CreateRoomSubmit(){
     dom.createroomlargecontainer.style.display = "none";
     dom.inroomlargecontainer.style.display = "flex";
-    socket.emit("createroom", dom.roomnameinput.value, dom.passwordinput.value, dom.maxplayerval.value, dom.mapselectval.value)
+    socket.emit("createroom", dom.roomnameinput.value, dom.passwordinput.value, dom.maxplayerval.value, dom.mapselectval.value, dom.name.value)
     game.gamestate = "roomlobby";
 }
 

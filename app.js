@@ -16,8 +16,15 @@ const mapData = {
 };
 
 const gamelist = [];
-
-const buildtime = 4;
+// Defenses, Industry, Finance, Research, Inherent
+const ideologymodifiers = [
+    // D    I       F       R          I
+    [.05,   1,      6,      0,      [3, .1]],   // Nationalism
+    [.10,   .5,     4,      .05,    [1, .5]],   // Conservaitsm
+    [.15,   .25,    3,      .10,    [0, 0]],    // Liberalism
+    [.20,   .75,    99999,  .10,    [0, 0]],    // Communism
+    [0,     .25,    99999,  .05,    [1, 2.5]],  // Anarchism
+]
 
 for(let i = 0; i < Object.keys(mapData).length; i++){
     fs.readFile(__dirname + '/mapspritesheets/' + Object.keys(mapData)[i] + ".png", (err, buf) => {
@@ -35,7 +42,7 @@ class Game {
         this.unclaimedcolors = [1, 2, 3, 4, 5, 6, 7, 8];
         
         this.winner = null;
-        this.players = []; // [socket, playernum, turnval, color, modifiers, ideology]
+        this.players = []; // [socket, playernum, turnval, color, modifiers, ideology, name]
         this.stateowners = []; // array of all states, either -1 for unclaimed or playernum
         this.fincountdowns = []; // array of all states, either -1 for no fincountdown or turns til completion
         this.tileimprovements = []; // array of all states, either [] for no improvements or the array contains improvements.
@@ -92,7 +99,11 @@ class Game {
                             this.players[this.turn][2] = 0
                             this.AdvanceTurn();
                         }
-                        this.players[this.turn][2] = 1 + Math.floor(.25*Count(this.stateowners, this.turn)+.5*Count(this.players[this.turn][4], 1));
+                        let baseapval = 0;
+                        if(ideologymodifiers[this.players[this.turn][5]][4][0] == 1){
+                            baseapval = ideologymodifiers[this.players[this.turn][5]][4][1];
+                        }
+                        this.players[this.turn][2] = 1 + Math.floor(baseapval + .25*Count(this.stateowners, this.turn)+ideologymodifiers[this.players[this.turn][5]][1]*Count(this.players[this.turn][4], 1));
                     }
                     this.BroadcastNewConquest(playernumber, index);
                     if(Count(this.stateowners, playernumber) == this.stateowners.length){
@@ -105,14 +116,8 @@ class Game {
         }
     }
     
-    AdvanceTurn(){
-        let endgame = true;
-        for(let i = 0; i < this.players.length; i++){
-            if(this.players[i][2] > 0){
-                endgame = false;
-            }
-        }
-        if(endgame){
+    AdvanceTurn(depth = 0){
+        if(depth > 10){
             this.DeleteGame();
         }
         this.turn = (this.turn + 1) % this.players.length;
@@ -120,7 +125,7 @@ class Game {
             this.players[this.turn][2] = 0
         }
         if(this.players[this.turn][2] == 0){
-            this.AdvanceTurn();
+            this.AdvanceTurn(depth + 1);
         }
         else{
             for(let i = 0; i < this.fincountdowns.length; i++){
@@ -149,9 +154,17 @@ class Game {
         let roll = Math.random();
         let defense = 0.6;
         if(mapData[this.map][tile+2][9].includes(0)){
-            defense += .15;
+            if(this.stateowners[tile] != -1){
+                defense += ideologymodifiers[this.players[this.stateowners[tile]][5]][0];
+                if(ideologymodifiers[this.players[this.stateowners[tile]][5]][4][0] == 0){
+                    defense += ideologymodifiers[this.players[this.stateowners[tile]][5]][4][1]
+                }
+            }
         }
-        roll += Count(this.players[player][4], 3) * .1;
+        roll += Count(this.players[player][4], 3) * ideologymodifiers[this.players[player][5]][3];
+        if(ideologymodifiers[this.players[player][5]][4][0] == 3){
+            roll += ideologymodifiers[this.players[player][5]][4][1]
+        }
         if(roll > defense){
             success = true;
         }
@@ -162,7 +175,7 @@ class Game {
             for(let i = 0; i < mapData[this.map][tile+2][9].length; i++){
                 this.players[player][4].push(mapData[this.map][tile+2][9][i]);
                 if(mapData[this.map][tile+2][9][i] == 2){
-                    this.fincountdowns[tile] = buildtime;
+                    this.fincountdowns[tile] = ideologymodifiers[this.players[player][5]][2];
                 }
                 if(this.stateowners[tile] != -1){
                     this.players[this.stateowners[tile]][4].splice(this.players[this.stateowners[tile]][4].indexOf(mapData[this.map][tile+2][9][i]), 1);
@@ -175,10 +188,21 @@ class Game {
                     this.AdvanceTurn();
                 }
             }
+            else if(this.gamestate == "claim"){
+                let baseapval = 0;
+                if(ideologymodifiers[this.players[player][5]][4][0] == 1){
+                    baseapval = ideologymodifiers[this.players[player][5]][4][1];
+                }
+                this.players[player][2] = 1 + Math.floor(baseapval + .25*Count(this.stateowners, player)+ideologymodifiers[this.players[player][5]][1]*Count(this.players[player][4], 1));
+            }
         }
         for(let i = 0; i < this.players.length; i++){
             this.statecounts[i] = Count(this.stateowners, i);
-            this.maxsubactions[i] = 1 + Math.floor(this.statecounts[i]*.25+Count(this.players[i][4], 1)*.5)
+            let baseapval = 0;
+            if(ideologymodifiers[this.players[i][5]][4][0] == 1){
+                baseapval = ideologymodifiers[this.players[i][5]][4][1];
+            }
+            this.maxsubactions[i] = 1 + Math.floor(baseapval + this.statecounts[i]*.25+Count(this.players[i][4], 1)*ideologymodifiers[this.players[i][5]][1])
         }
         for(let i = 0; i < this.players.length; i++){
             this.players[i][0].emit("conquest", player, tile, success, this.turn, this.subturn, this.maxsubactions, this.statecounts, this.players[this.turn][2]);
@@ -266,7 +290,7 @@ class Game {
         if(this.stateowners[tile] != -1 && this.players[this.stateowners[tile]][2] > 0){
             this.gamestate = "build";
             this.buildcount++;
-            this.fincountdowns[tile] = buildtime;
+            this.fincountdowns[tile] = ideologymodifiers[this.players[this.stateowners[tile]][5]][2];
         }
     }
 
@@ -291,23 +315,23 @@ app.use(express.static(path.join(__dirname, 'public')));
 let roomnum = 0;
 
 io.on('connection', socket => {
-    socket.on("createroom", (roomname, roompassword, maxplayers, roommap) => {
+    socket.on("createroom", (roomname, roompassword, maxplayers, roommap, name) => {
         if(maxplayers < 9 && maxplayers > 1 && Math.round(maxplayers) == maxplayers){
             socket.game = new Game(roomname, roompassword, maxplayers, roommap, roomnum);
             roomnum++;
-            socket.game.players.push([socket, 0, 1, 0, [], 0]);
+            socket.game.players.push([socket, 0, 1, 0, [], 0, name]);
             gamelist.push(socket.game);
             socket.game.BroadcastPlayers();
             socket.playernum = 0;
         }
     })
 
-    socket.on("joinroom", (id) =>{
+    socket.on("joinroom", (id, name) =>{
         for(let i = 0; i < gamelist.length; i++){
             if(id==gamelist[i].roomnum && gamelist[i].players.length < gamelist[i].maxplayers){
                 socket.game = gamelist[i];
                 socket.playernum = socket.game.players.length;
-                socket.game.players.push([socket, socket.game.players.length, 1, socket.game.unclaimedcolors.shift(), [], 0]);
+                socket.game.players.push([socket, socket.game.players.length, 1, socket.game.unclaimedcolors.shift(), [], 4, name]);
                 socket.game.BroadcastPlayers();
             }
         }
