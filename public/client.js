@@ -30,6 +30,13 @@ const colors = [
     "#000075"
 ]
 
+const modifiercolors = [
+    "#57360a",
+    "#8a8a8a",
+    "#15ff00",
+    "#6e0000"
+]
+
 const ctx = dom.c.getContext("2d")
 const ictx = dom.iconc.getContext("2d")
 let socket;
@@ -70,6 +77,10 @@ function InitSocketFunctions(){
             game.metadata = metadata;
             for(let i = 0; i < metadata.length; i++){
                 game.stateowners.push(-1);
+                game.improvements.push([]);
+            }
+            for(let i = 0; i < game.metadata.length; i++){
+                game.improvements[i] = [...game.improvements[i], ...game.metadata[i][9]];
             }
             game.sctx.globalCompositeOperation = "source-atop";
             game.Draw(); 
@@ -157,6 +168,18 @@ function InitSocketFunctions(){
             dom.roomplatecontainer.appendChild(roomplate);
         }
     })
+
+    socket.on("build", (buildcount) =>{
+        game.gamestate = "build";
+        game.buildcount = buildcount;
+    })
+
+    socket.on("improvements", (improvements)=>{
+        game.improvements = improvements;
+        for(let i = 0; i < game.metadata.length; i++){
+            game.improvements[i] = [...game.improvements[i], ...game.metadata[i][9]];
+        }
+    })
 }
 
 // Classes
@@ -173,7 +196,9 @@ class Game {
         this.highlightedstate = null;
         this.player = 0;
         this.winner = null;
+        this.buildcount = 0;
         this.playersfinishedclaiming = [];
+        this.improvements = [];
         this.stateowners = [];
         this.turn = 0;
         this.tick = 0;
@@ -182,7 +207,7 @@ class Game {
             let temp = performance.now();
             game.Update();
             game.Draw();
-            //console.log(Math.round((performance.now() - temp)*10)/10)
+            console.log(Math.round((performance.now() - temp)*10)/10)
         }, 16)
 
         this.RefreshRooms();
@@ -190,7 +215,7 @@ class Game {
     }
 
     Update(){
-        if(this.gamestate == "claim" || this.gamestate == "conquest"){
+        if(this.gamestate == "claim" || this.gamestate == "conquest" || this.gamestate == "build"){
             if(this.oldmousex != mousex || this.oldmousey != mousey || mouseclick){
                 this.oldmousex = mousex;
                 this.oldmousey = mousey;
@@ -206,6 +231,11 @@ class Game {
                         else if(this.gamestate == "conquest"){
                             if(mouseclick){
                                 socket.emit("attack", i);
+                            }
+                        }
+                        else if(this.gamestate == "build"){
+                            if(mouseclick){
+                                socket.emit("build", i, 0);
                             }
                         }
                         break;
@@ -224,7 +254,7 @@ class Game {
     }
 
     Draw(){
-        if(this.gamestate == "claim" || this.gamestate == "conquest" || this.gamestate == "endscreen"){
+        if(this.gamestate == "claim" || this.gamestate == "conquest" || this.gamestate == "endscreen" || this.gamestate == "build"){
             ctx.clearRect(0, 0, dom.c.width, dom.c.height);
             if(this.highlightedstate != null){
                 this.sctx.fillStyle = "#FFF";
@@ -244,6 +274,10 @@ class Game {
                         this.sctx.fillRect(0, this.metadata[i][5] - 1, this.spritesheet.width, this.metadata[i][2]);
                     }
                     ctx.drawImage(this.spritesheet, 0, this.metadata[i][5] - 1, this.metadata[i][1], this.metadata[i][2], this.metadata[i][3], this.metadata[i][4], this.metadata[i][1], this.metadata[i][2]);
+                    for(let j = 0; j < this.improvements[i].length; j++){
+                        ctx.fillStyle = modifiercolors[this.improvements[i][j]]
+                        ctx.fillRect(this.metadata[i][10] - this.improvements[i].length*10 + j*20 - 5, this.metadata[i][11] - 10, 20, 20);
+                    }
                 }
             }
             ictx.lineWidth = 10;
@@ -366,7 +400,7 @@ function pointinside(vertx, verty, testx, testy) {
         if(vertx[i] == testx && verty[i] < testy){
             up = true;
         }
-        if(vertx[i] == testx && verty[i] < testy){
+        if(vertx[i] == testx && verty[i] > testy){
             down = true;
         }
         if(verty[i] == testy && vertx[i] < testx){

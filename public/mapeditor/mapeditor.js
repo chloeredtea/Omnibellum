@@ -226,6 +226,12 @@ function GenerateSpriteMap(){
 let statenamestate = -1;
 let finalstatemetadata = [];
 let nameinput = document.getElementById("statenamesubmission")
+let provinceinputs = [
+    document.getElementById("0"),
+    document.getElementById("1"),
+    document.getElementById("2"),
+    document.getElementById("3")
+]
 
 nameinput.addEventListener('keydown', isEnterPressed);
 
@@ -252,7 +258,23 @@ function GetStateNames(){
         DrawStates(ctx4);
     }
     else {
-        finalstatemetadata.push([nameinput.value, statemetadata[Object.keys(statemetadata)[statenamestate]][1], statemetadata[Object.keys(statemetadata)[statenamestate]][0], statemetadata[Object.keys(statemetadata)[statenamestate]][2], statemetadata[Object.keys(statemetadata)[statenamestate]][3], statemetadata[Object.keys(statemetadata)[statenamestate]][4], vertexdata[Object.keys(vertexdata)[statenamestate]]]);
+        let modifiers = [];
+        for(let i = 0; i < provinceinputs.length; i++){
+            if(provinceinputs[i].checked){
+                modifiers.push(i);
+            }
+            provinceinputs[i].checked = false;
+        }
+        let avgx = 0;
+        let avgy = 0;
+        let tempkey = Object.keys(vertexdata)[statenamestate]
+        for(let i = 0; i < vertexdata[tempkey][0].length; i++){
+            avgx += vertexdata[tempkey][0][i];
+            avgy += vertexdata[tempkey][1][i];
+        }
+        avgx = Math.round(avgx / vertexdata[tempkey][0].length);
+        avgy = Math.round(avgy / vertexdata[tempkey][1].length);
+        finalstatemetadata.push([nameinput.value, statemetadata[Object.keys(statemetadata)[statenamestate]][1], statemetadata[Object.keys(statemetadata)[statenamestate]][0], statemetadata[Object.keys(statemetadata)[statenamestate]][2], statemetadata[Object.keys(statemetadata)[statenamestate]][3], statemetadata[Object.keys(statemetadata)[statenamestate]][4], vertexdata[Object.keys(vertexdata)[statenamestate]], modifiers, avgx, avgy]);
         oldnamestonames[Object.keys(statemetadata)[statenamestate]] = nameinput.value;
         nameinput.value = "";
     }
@@ -274,9 +296,10 @@ function GetStateNames(){
         DrawStates(ctx4);
 
         let output = document.getElementById("output");
-        output.innerText += "[" + c3.width + ", " + c3.height + ", "
+        let outputstring = "";
+        outputstring += "[" + c3.width + ", " + c3.height + ", "
         for(let i = 0; i < finalstatemetadata.length; i++){
-            output.innerText += "[" + "\""+ finalstatemetadata[i][0] + "\", " // Add name [0]
+            outputstring += "[" + "\""+ finalstatemetadata[i][0] + "\", " // Add name [0]
             + finalstatemetadata[i][1] + ", " // Add width [1]
             + finalstatemetadata[i][2] + ", " // Add height [2]
             + finalstatemetadata[i][3] + ", " // Add dx [3]
@@ -284,15 +307,19 @@ function GetStateNames(){
             + finalstatemetadata[i][5] + ", [" // add sy [5]
             + finalstatemetadata[i][6][0] + "]" // add vertexdatax [6]
             + ", [" + finalstatemetadata[i][6][1] + "],"; // add vertexdatay [7]
-            output.innerText += "[" // add adjacencies [8]
+            outputstring += "[" // add adjacencies [8]
             for(let j = 0; j  < finaladjacencies[finalstatemetadata[i][0]].length; j++){
-                output.innerText += finaladjacencies[finalstatemetadata[i][0]][j] + ",";
+                outputstring += finaladjacencies[finalstatemetadata[i][0]][j] + ",";
             }
-            output.innerText = output.innerText.substring(0, output.innerText.length - 1);
-            output.innerText += "]],";
+            outputstring = outputstring.substring(0, outputstring.length - 1) + "],";
+            outputstring += "[" + finalstatemetadata[i][7] + "]," // add province modifiers [9]
+            outputstring += finalstatemetadata[i][8] + ", "; // add avgx [10]
+            outputstring += finalstatemetadata[i][9] + ", " // add avgy [11]
+            outputstring += "],";
         }
-        output.innerText = output.innerText.substring(0, output.innerText.length - 1);
-        output.innerText += "],"
+        outputstring = outputstring.substring(0, outputstring.length - 1);
+        outputstring += "],";
+        output.innerText = outputstring;
 
     }
     else{
