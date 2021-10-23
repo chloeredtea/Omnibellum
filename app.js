@@ -117,7 +117,7 @@ class Game {
     }
     
     AdvanceTurn(depth = 0){
-        if(depth > 10){
+        if(depth > 8){
             this.DeleteGame();
         }
         this.turn = (this.turn + 1) % this.players.length;

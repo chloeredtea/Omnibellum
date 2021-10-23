@@ -1,9 +1,113 @@
+html, body {
+    min-height: 100%;
+}
+
+h1 {
+    margin: 0;
+}
+
+body {
+    background-image: url("assets/welcomebackground.jpg");
+    background-size: cover;
+    background-position: bottom;
+    
+}
+
+/* Fonts */
+
+@font-face {
+    font-family: 'urbanist-bold';
+    src: url('/assets/fonts/Urbanist-Black.ttf');
+}
+
+@font-face {
+    font-family: 'urbanist';
+    src: url('/assets/fonts/Urbanist-Medium.ttf');
+}
+
+/* Header */
+
+#header{
+    text-align: center;
+    display: none;
+}
+
+#header h1{
+    font-family: "urbanist-bold";
+    font-size: 5vmin;
+    color: white;
+}
+
+/* Welcome Screen */
+
+#welcomecontainer {
+
+}
+
+#welcomebox {
+    background-color: white;
+    width: 45vmin;
+    height: 30vmin;
+    text-align: center;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-top: 30vmin;
+    border-radius: 1.5vmin;
+}
+
+#welcometitle {
+    font-family: "urbanist-bold";
+    font-size: 5vmin;
+}
+
+#username {
+    font-family: "urbanist";
+    text-align: center;
+    width: 38%;
+    height: 8%;
+    font-size: 2.2vmin;
+}
+
+#playbutton {
+    font-family: "urbanist";
+    font-size: 4vmin;
+    width: 45%;
+    height: 18%;
+    border-radius: 7px;
+    background-color: rgb(47, 120, 255);
+    color: white;
+    transition: 0.25s;
+}
+
+#playbutton:hover {
+    background-color: rgb(107, 159, 255);
+    
+}
+
+/* Room List */
+
+#roomlistcontainer {
+    display: none;
+}
+
+#roomselectcontainerinner {
+    height: 600px;
+    width: 650px;
+    overflow: auto;
+}
+
+#roomselectcontainer p{
+    color: black
+}
+
+/* */
 
 
 button {
     background-color: #F6F6F6;
     cursor: pointer;  
     transition: background-color .5s; 
+    text-align: center;
 }
 
 button:hover {
@@ -108,15 +212,7 @@ button:hover {
     color: white;
 }
 
-#roomselectcontainerinner {
-    height: 600px;
-    width: 650px;
-    overflow: auto;
-}
 
-#roomselectcontainer p{
-    color: black
-}
 
 .roomplate {
     border-style: solid;
@@ -236,4 +332,26 @@ button:hover {
     top: 250px;
     left: 50%;
     transform: translate(-50%, 0);
+}
+
+/* Footer */
+
+#footer {
+    display: flex;
+    flex-direction: row;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.507);
+    color: white;
+    justify-content: right;
+}
+
+#footer a {
+    color:white;
+    margin-right: 10px;
+    font-size: 1.5vh;
+    text-decoration: underline;
+    cursor: pointer;
 }

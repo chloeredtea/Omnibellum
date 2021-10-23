@@ -9,9 +9,19 @@
   </head>
   <body>
     <script src="https://cdn.socket.io/4.2.0/socket.io.min.js" integrity="sha384-PiBR5S00EtOj2Lto9Uu81cmoyZqR57XcOna1oAuVuIEjzj0wpqDVfD0JA9eXlRsj" crossorigin="anonymous"></script>
-    
-    
-    <div id="roomselectcontainer" class="flex-body">
+  
+
+    <div id="header">
+      <h1>OMNIBELLUM</h1>
+    </div>
+    <div id="welcomecontainer" class="flex-body">
+      <div id="welcomebox" class="flex-column">
+        <h1 id="welcometitle">OMNIBELLUM</h1>
+        <input type="text" id="username" placeholder="USERNAME">
+        <button id="playbutton" onclick="PlayButton()">PLAY</button>
+      </div>
+    </div>
+    <div id="roomlistcontainer" class="flex-body">
       <div class="flex-column">
         <div class="flex-row" id="topbar">
           <input type="text" id="usernamesubmission" placeholder="Enter username...">
@@ -23,7 +33,6 @@
         </div>
       </div>
     </div>
-    
     <div id="createroomcontainer" class="flex-body">
       <div id="createroominputs" class="flex-column">
         <button onclick="ReturnToRoomSelect()">Back</button>
@@ -58,7 +67,6 @@
         </select>
       </div>
     </div>
-
     <div id="inroomcontainer" class="flex-body">
       <div id="roominfo" class="flex-column">
         <button onclick="ReturnToRoomSelect();">LEAVE</button>
@@ -119,7 +127,6 @@
         <button onclick="StartGame();">START</button>
       </div>
     </div>
-
     <div id="ingamecontainer" class="flex-body">
       <div class="flex-row">
         <div id="chatbox">
@@ -146,14 +153,16 @@
         </div>
       </div>
     </div>
-    
     <div id="endscreencontainer" class="flex-body">
       <div class="flex-column">
         <h1 id="winner">Chloe wins!</h1>
         <button onclick="LeaveFinishedGame();">Leave</button>
       </div>
     </div>
-
+    <div id="footer">
+      <a href="https://discord.gg/NyY2pqxwSP">Discord</a>
+      <a href="mailto:chloeredtea@gmail.com">Contact</a>
+    </div>
     <script src="client.js"></script>
   </body>
 </html>

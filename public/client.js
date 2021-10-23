@@ -1,5 +1,8 @@
 // Declare Constant Variables
 const dom = {
+    welcomelargecontainer: document.getElementById("welcomecontainer"),
+    username: document.getElementById("username"),
+    header: document.getElementById("header"),
     c: document.getElementById("canvas"),
     iconc: document.getElementById("iconcanvas"),
     turnsremainingtext: document.getElementById("turnsremainingtext"),
@@ -7,7 +10,7 @@ const dom = {
     nameplatecontainer: document.getElementById("nameplatecontainer"),
     roomplatecontainer: document.getElementById("roomplatecontainer"),
     ingamelargecontainer: document.getElementById("ingamecontainer"),
-    roomslargecontainer: document.getElementById("roomselectcontainer"),
+    roomslargecontainer: document.getElementById("roomlistcontainer"),
     createroomlargecontainer: document.getElementById("createroomcontainer"),
     inroomlargecontainer: document.getElementById("inroomcontainer"),
     roomnameinput: document.getElementById("createroomname"),
@@ -16,7 +19,6 @@ const dom = {
     mapselectval: document.getElementById("createroommap"),
     endscreenlargecontainer: document.getElementById("endscreencontainer"),
     winnerdisplay: document.getElementById("winner"),
-    name: document.getElementById("usernamesubmission"),
 }
 
 const colors = [
@@ -43,6 +45,8 @@ const ictx = dom.iconc.getContext("2d")
 let socket;
 let game;
 let mousex = 0, mousey = 0, mouseclick = false;
+let username;
+
 
 // Global Functions
 function Init(){
@@ -193,7 +197,7 @@ class Game {
         this.metadata;
         this.oldmousex = 0;
         this.oldmousey = 0;
-        this.gamestate = "roomselect";
+        this.gamestate = "welcome";
         this.highlightedstate = null;
         this.player = 0;
         this.winner = null;
@@ -205,10 +209,10 @@ class Game {
         this.tick = 0;
         this.players = []; // Playernum, subturnlimit, color
         this.gameInterval = setInterval(()=>{
-            let temp = performance.now();
+            //let temp = performance.now();
             game.Update();
             game.Draw();
-            console.log(Math.round((performance.now() - temp)*10)/10)
+            //console.log(Math.round((performance.now() - temp)*10)/10)
         }, 16)
 
         this.RefreshRooms();
@@ -308,7 +312,7 @@ class Game {
     }
 
     JoinRoom(id){
-        socket.emit("joinroom", id, dom.name.value);
+        socket.emit("joinroom", id, username);
         dom.roomslargecontainer.style.display = "none";
         dom.inroomlargecontainer.style.display = "flex";
         this.gamestate = "roomlobby";
@@ -361,7 +365,7 @@ function CreateRoom(){
 function CreateRoomSubmit(){
     dom.createroomlargecontainer.style.display = "none";
     dom.inroomlargecontainer.style.display = "flex";
-    socket.emit("createroom", dom.roomnameinput.value, dom.passwordinput.value, dom.maxplayerval.value, dom.mapselectval.value, dom.name.value)
+    socket.emit("createroom", dom.roomnameinput.value, dom.passwordinput.value, dom.maxplayerval.value, dom.mapselectval.value, username)
     game.gamestate = "roomlobby";
 }
 
@@ -392,6 +396,22 @@ function LeaveFinishedGame(){
     dom.roomslargecontainer.style.display = "flex";
     clearInterval(game.gameInterval);
     game = new Game();
+}
+
+function PlayButton(){
+    game.gamestate = "roomselect";
+    dom.welcomelargecontainer.style.display = "none";
+    dom.roomslargecontainer.style.display = "flex";
+    dom.header.style.display = "inline";
+    if(dom.username.value == ""){
+        username = "Anonymous"
+    }
+    else{
+        username = dom.username.value;
+        if(username.length > 15){
+            username = username.substring(0, 15);
+        }
+    }
 }
 
 // determine if point is inside polygon
