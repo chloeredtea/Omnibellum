@@ -349,7 +349,7 @@ class Game {
                         }
                         else if(this.improvements[i][j] == 2){
                             let moneynum = 7 - this.fincountdowns[i];
-                            if(this.fincountdowns[i] < 1){
+                            if(this.fincountdowns[i] < 1 || moneynum < 1){
                                 moneynum = 1;
                             }
                             console.log(moneynum);
