@@ -61,9 +61,10 @@
           </div>
         </div>
         <div id="createroommapselect" class="flex-column">
-          <img src="/assets/unitedstates.png">
-          <select id="createroommap">
+          <img id="mapselectimage" src="/assets/unitedstates.png">
+          <select id="createroommap" onchange="ChangeMapSelectImage(this);">
             <option value="unitedstates">United States</option>
+            <option value="europe">Europe</option>
           </select>
         </div>
       </div>

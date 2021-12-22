@@ -567,3 +567,10 @@ function ChangeColor(val){
 function SetBuildType(type){
     game.buildtype = type;
 }
+
+function ChangeMapSelectImage(select){
+    let image = document.getElementById("mapselectimage");
+    image.src="/assets/" + select.options[select.selectedIndex].value + ".png";
+    image = document.getElementById("mapimage");
+    image.src="/assets/" + select.options[select.selectedIndex].value + ".png";
+}

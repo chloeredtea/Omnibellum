@@ -284,11 +284,12 @@ function GetStateNames(){
         for(let i = 0; i < Object.keys(statemetadata).length; i++){
             nametonumberdict[Object.keys(statemetadata)[i]] = i;
         }
-        for(let i = 0; i < Object.keys(adjacencies).length; i++){
+        console.log(nametonumberdict);
+        for(let i = 0; i < Object.keys(statemetadata).length; i++){
+            console.log(i);
             finaladjacencies[finalstatemetadata[i][0]] = [];
             let currentadjacencies = adjacencies[Object.keys(adjacencies)[i]];
             for(let j = 0; j < adjacencies[Object.keys(adjacencies)[i]].length; j++){
-                console.log(adjacencies[Object.keys(adjacencies)[i]]);
                 finaladjacencies[finalstatemetadata[i][0]].push(nametonumberdict[currentadjacencies[Object.keys(currentadjacencies)[j]]]);
             }
         }
