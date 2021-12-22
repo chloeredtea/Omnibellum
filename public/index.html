@@ -24,91 +24,115 @@
     <div id="roomlistcontainer" class="flex-body">
       <div class="flex-column">
         <div class="flex-row" id="topbar">
-          <input type="text" id="usernamesubmission" placeholder="Enter username...">
-          <button id="createroombutton" onclick="CreateRoom();">Create Room</button>
+          <button id="quickplay" onclick="QuickPlay();">QUICK PLAY</button>
+          <button id="createroombutton" onclick="CreateRoom();">CREATE ROOM</button>
         </div>
         <div id="roomselectcontainerinner" class="flex-column">
+          <h2 id="roomstitle">ROOMS</h2>
           <div class="flex-column" id="roomplatecontainer">
           </div>
         </div>
       </div>
     </div>
-    <div id="createroomcontainer" class="flex-body">
-      <div id="createroominputs" class="flex-column">
-        <button onclick="ReturnToRoomSelect()">Back</button>
-        <div>
-          <h2>Name</h2>
-          <input type="text" id="createroomname">
+    <div id="createroomcontainer" class="flex-column">
+      <button onclick="ReturnToRoomSelect()" id="backbutton"> <img src="assets/backarrow.png" /> BACK</button>
+      <div id="createroominnercontainer" class="flex-body">
+        <div id="createroominputs" class="flex-column">
+          <div>
+            <h2>Room Name</h2>
+            <input type="text" id="createroomname">
+          </div>
+          <div>
+            <h2>Room Password</h2>
+            <p>(Optional)</p>
+            <input type="text" id="createroompassword">
+          </div>
+          <div>
+            <h2>Max Players</h2>
+            <div id="createroommaxplayers" class="flex-row">
+              <button id="maxplayerbutton8" onclick="SetMaxPlayers(8);">8</button>
+              <button id="maxplayerbutton7" onclick="SetMaxPlayers(7);">7</button>
+              <button id="maxplayerbutton6" onclick="SetMaxPlayers(6);">6</button>
+              <button id="maxplayerbutton5" onclick="SetMaxPlayers(5);">5</button>
+              <button id="maxplayerbutton4" onclick="SetMaxPlayers(4);">4</button>
+              <button id="maxplayerbutton3" onclick="SetMaxPlayers(3);">3</button>
+              <button id="maxplayerbutton2" onclick="SetMaxPlayers(2);">2</button>
+              </div>
+          </div>
         </div>
-        <div>
-          <h2>Password (optional)</h2>
-          <input type="text" id="createroompassword">
-        </div>
-        <div>
-          <h2>Max Players</h2>
-          <select id="createroommaxplayers">
-            <option value="8">8</option>
-            <option value="7">7</option>
-            <option value="6">6</option>
-            <option value="5">5</option>
-            <option value="4">4</option>
-            <option value="3">3</option>
-            <option value="2">2</option>
+        <div id="createroommapselect" class="flex-column">
+          <img src="/assets/unitedstates.png">
+          <select id="createroommap">
+            <option value="unitedstates">United States</option>
           </select>
         </div>
-        <div>
-          <button id="createroomconfirm" onclick="CreateRoomSubmit();">CREATE</button>
-        </div>
       </div>
-      <div id="createroommapselect" class="flex-column">
-        <img src="/assets/unitedstates.png">
-        <select id="createroommap">
-          <option value="unitedstates">US States</option>
-        </select>
-      </div>
+      <button id="createroomconfirm" onclick="CreateRoomSubmit();">CREATE</button>
     </div>
-    <div id="inroomcontainer" class="flex-body">
+    <div id="inroomcontainer" class="flex-column">
+      <button onclick="ReturnToRoomSelect();" id="leavebutton"> <img src="assets/backarrow.png" /> LEAVE</button>
+      <div id="inroominnercontainer" class="flex-body">
       <div id="roominfo" class="flex-column">
-        <button onclick="ReturnToRoomSelect();">LEAVE</button>
-        <h2 id="roomname">Lobby name</h2>
-        <div class="namebox">
-          <div class="colorbox" id="inroomcolor1"></div>
-          <p id="inroomname1"></p>
+        <div class="flex-row">
+          <div class="ideologyicon" id="ideologyicon1"><img id="ideologyiconimage1" src="assets/ideologyicons/nationalist.png" /></div>
+          <div class="namebox" id="namebox1">
+            <p id="inroomname1"></p>
+            <div class="colorbox" id="inroomcolor1"></div>
+          </div>
         </div>
-        <div class="namebox">
-          <div class="colorbox" id="inroomcolor2"></div>
-          <p id="inroomname2"></p>
+        <div class="flex-row">
+          <div class="ideologyicon" id="ideologyicon2"><img id="ideologyiconimage2" src="assets/ideologyicons/nationalist.png" /></div>
+          <div class="namebox" id="namebox2">
+            <p id="inroomname2"></p>
+            <div class="colorbox" id="inroomcolor2"></div>
+          </div>
         </div>
-        <div class="namebox">
-          <div class="colorbox" id="inroomcolor3"></div>
-          <p id="inroomname3"></p>
+        <div class="flex-row">
+          <div class="ideologyicon" id="ideologyicon3"><img id="ideologyiconimage3" src="assets/ideologyicons/nationalist.png" /></div>
+          <div class="namebox" id="namebox3">
+            <p id="inroomname3"></p>
+            <div class="colorbox" id="inroomcolor3"></div>
+          </div>
         </div>
-        <div class="namebox">
-          <div class="colorbox" id="inroomcolor4"></div>
-          <p id="inroomname4"></p>
+        <div class="flex-row">
+          <div class="ideologyicon" id="ideologyicon4"><img id="ideologyiconimage4" src="assets/ideologyicons/nationalist.png" /></div>
+          <div class="namebox" id="namebox4">
+            <p id="inroomname4"></p>
+            <div class="colorbox" id="inroomcolor4"></div>
+          </div>
         </div>
-        <div class="namebox">
-          <div class="colorbox" id="inroomcolor5"></div>
-          <p id="inroomname5"></p>
+        <div class="flex-row">
+          <div class="ideologyicon" id="ideologyicon5"><img id="ideologyiconimage5" src="assets/ideologyicons/nationalist.png" /></div>
+          <div class="namebox" id="namebox5">
+            <p id="inroomname5"></p>
+            <div class="colorbox" id="inroomcolor5"></div>
+          </div>
         </div>
-        <div class="namebox">
-          <div class="colorbox" id="inroomcolor6"></div>
-          <p id="inroomname6"></p>
+        <div class="flex-row">
+          <div class="ideologyicon" id="ideologyicon6"><img id="ideologyiconimage6" src="assets/ideologyicons/nationalist.png" /></div>
+          <div class="namebox" id="namebox6">
+            <p id="inroomname6"></p>
+            <div class="colorbox" id="inroomcolor6"></div>
+          </div>
         </div>
-        <div class="namebox">
-          <div class="colorbox" id="inroomcolor7"></div>
-          <p id="inroomname7"></p>
+        <div class="flex-row">
+          <div class="ideologyicon" id="ideologyicon7"><img id="ideologyiconimage7" src="assets/ideologyicons/nationalist.png" /></div>
+          <div class="namebox" id="namebox7">
+            <p id="inroomname7"></p>
+            <div class="colorbox" id="inroomcolor7"></div>
+          </div>
         </div>
-        <div class="namebox">
-          <div class="colorbox" id="inroomcolor8"></div>
-          <p id="inroomname8"></p>
+        <div class="flex-row">
+          <div class="ideologyicon" id="ideologyicon8"><img id="ideologyiconimage8" src="assets/ideologyicons/nationalist.png" /></div>
+          <div class="namebox" id="namebox8">
+            <p id="inroomname8"></p>
+            <div class="colorbox" id="inroomcolor8"></div>
+          </div>
         </div>
+        <button id="startbutton" onclick="StartGame();">START</button>
       </div>
       <div id="roominfomap" class="flex-column">
-        <div class="flex-row">
-          <img src="assets/tinyicon.png"> <p>3/5</p>
-        </div>
-        <img src="assets/unitedstates.png">
+        <img src="assets/unitedstates.png" id="mapimage">
         <div id="colorbuttons">
           <div id="colorbuttons1">
             <button class="colorbutton" id="colorbutton1" onclick="ChangeColor(0);"></button>
@@ -124,21 +148,82 @@
             <button class="colorbutton" id="colorbutton9" onclick="ChangeColor(8);"></button>
           </div>
         </div>
-        <button onclick="StartGame();">START</button>
+        <div id="ideologybuttons">
+          <button class="ideologybutton" id="nationalistbutton" onclick="ChangeIdeology(0);"><img src="assets/ideologyicons/nationalist.png"/></button>
+          <button class="ideologybutton" id="conservativebutton" onclick="ChangeIdeology(1);"><img src="assets/ideologyicons/conservative.png"/></button>
+          <button class="ideologybutton" id="liberalbutton" onclick="ChangeIdeology(2);"><img src="assets/ideologyicons/liberal.png"/></button>
+          <button class="ideologybutton" id="communistbutton" onclick="ChangeIdeology(3);"><img src="assets/ideologyicons/communist.png"/></button>
+          <button class="ideologybutton" id="anarchistbutton" onclick="ChangeIdeology(4);"><img src="assets/ideologyicons/anarchist.png"/></button>
+        </div>
+        <div id="ideologytooltips">
+          <div class="ideologytooltip nationalisttooltip" id="inlobby0">
+            <h1 class="ideologyname">NATIONALIST</h1>
+            <div class="ideologygridcontainer">
+              <img id="defenseimage" src="assets/difriicons/defense.png"> <p class="ideologydetail">+5% Defense</p>
+              <img id="industryimage" src="assets/difriicons/industry.png"> <p class="ideologydetail">+1 Actions</p>
+              <img id="moneyimage" src="assets/difriicons/money6.png"> <p class="ideologydetail">6 turns</p>
+              <img id="researchimage" src="assets/difriicons/research.png"> <p class="ideologydetail">N/A</p>
+              <img src="assets/ideologyicons/nationalist.png"> <p class="ideologydetail">+10% Attack</p>
+            </div>
+          </div>
+          <div class="ideologytooltip conservativetooltip" id="inlobby1">
+            <h1 class="ideologyname">CONSERVATIVE</h1>
+            <div class="ideologygridcontainer">
+              <img id="defenseimage" src="assets/difriicons/defense.png"> <p class="ideologydetail">+10% Defense</p>
+              <img id="industryimage" src="assets/difriicons/industry.png"> <p class="ideologydetail">+0.5 Actions</p>
+              <img id="moneyimage" src="assets/difriicons/money6.png"> <p class="ideologydetail">4 turns</p>
+              <img id="researchimage" src="assets/difriicons/research.png"> <p class="ideologydetail">+5% Attack</p>
+              <img src="assets/ideologyicons/conservative.png"> <p class="ideologydetail">+0.5 Actions</p>
+            </div>
+          </div>
+          <div class="ideologytooltip liberaltooltip" id="inlobby2">
+            <h1 class="ideologyname">LIBERAL</h1>
+            <div class="ideologygridcontainer">
+              <img id="defenseimage" src="assets/difriicons/defense.png"> <p class="ideologydetail">+15% Defense</p>
+              <img id="industryimage" src="assets/difriicons/industry.png"> <p class="ideologydetail">+0.25 Actions</p>
+              <img id="moneyimage" src="assets/difriicons/money6.png"> <p class="ideologydetail">3 turns</p>
+              <img id="researchimage" src="assets/difriicons/research.png"> <p class="ideologydetail">+10% Attack</p>
+            </div>
+          </div>
+          <div class="ideologytooltip communisttooltip" id="inlobby3">
+            <h1 class="ideologyname">COMMUNIST</h1>
+            <div class="ideologygridcontainer">
+              <img id="defenseimage" src="assets/difriicons/defense.png"> <p class="ideologydetail">+20% Defense</p>
+              <img id="industryimage" src="assets/difriicons/industry.png"> <p class="ideologydetail">+0.75 Actions</p>
+              <img id="moneyimage" src="assets/difriicons/money6.png"> <p class="ideologydetail">N/A</p>
+              <img id="researchimage" src="assets/difriicons/research.png"> <p class="ideologydetail">+10% Attack</p>
+            </div>
+          </div>
+          <div class="ideologytooltip anarchisttooltip" id="inlobby4">
+            <h1 class="ideologyname">ANARCHIST</h1>
+            <div class="ideologygridcontainer">
+              <img id="defenseimage" src="assets/difriicons/defense.png"> <p class="ideologydetail">N/A</p>
+              <img id="industryimage" src="assets/difriicons/industry.png"> <p class="ideologydetail">+0.25 Actions</p>
+              <img id="moneyimage" src="assets/difriicons/money6.png"> <p class="ideologydetail">N/A</p>
+              <img id="researchimage" src="assets/difriicons/research.png"> <p class="ideologydetail">+5% Attack</p>
+              <img src="assets/ideologyicons/anarchist.png"> <p class="ideologydetail">+2.5 Actions</p>
+            </div>
+          </div>
+          </div>
+        </div>
       </div>
+      
     </div>
     <div id="ingamecontainer" class="flex-body">
-      <div class="flex-row">
-        <div id="chatbox">
-
+      <div class="flex-column">
+        <div id="buildbuttondiv" class="flex-column">
+          <button class="buildbutton"><img src="assets/difriicons/defense.png" onclick="SetBuildType(0);"></button>
+          <button class="buildbutton"><img src="assets/difriicons/industry.png" onclick="SetBuildType(1);"></button>
+          <button class="buildbutton"><img src="assets/difriicons/money6.png" onclick="SetBuildType(2);"></button>
+          <button class="buildbutton"><img src="assets/difriicons/research.png" onclick="SetBuildType(3);"></button>
         </div>
       </div>
       <div class="flex-column">
         <div id="canvasdiv">
           <canvas id="canvas"></canvas>
         </div>
-        <div id="infobox">
-
+        <div id="turnsremainingdiv">
+          <p id="turnsremaining">1 Actions Remaining</p>
         </div>
       </div>
       <div class="flex-column">
@@ -147,9 +232,58 @@
           <div id="nameplatecontainer">
           </div>
         </div>
-        <div id="turnsremaining">
-          <p id="turnsremainingtext">Claim your territory!</p>
-          <p id="turnsremainingval"></p>
+      </div>
+      <div class="flex-column">
+        <div id="ingameideologytooltips">
+          <div class="ingameideologytooltip nationalisttooltip" id="ingame0">
+            <h1 class="ideologyname">NATIONALIST</h1>
+            <div class="ideologygridcontainer">
+              <img id="defenseimage" src="assets/difriicons/defense.png"> <p class="ideologydetail">+5% Defense</p>
+              <img id="industryimage" src="assets/difriicons/industry.png"> <p class="ideologydetail">+1 Actions</p>
+              <img id="moneyimage" src="assets/difriicons/money6.png"> <p class="ideologydetail">6 turns</p>
+              <img id="researchimage" src="assets/difriicons/research.png"> <p class="ideologydetail">N/A</p>
+              <img src="assets/ideologyicons/nationalist.png"> <p class="ideologydetail">+10% Attack</p>
+            </div>
+          </div>
+          <div class="ingameideologytooltip conservativetooltip" id="ingame1">
+            <h1 class="ideologyname">CONSERVATIVE</h1>
+            <div class="ideologygridcontainer">
+              <img id="defenseimage" src="assets/difriicons/defense.png"> <p class="ideologydetail">+10% Defense</p>
+              <img id="industryimage" src="assets/difriicons/industry.png"> <p class="ideologydetail">+0.5 Actions</p>
+              <img id="moneyimage" src="assets/difriicons/money6.png"> <p class="ideologydetail">4 turns</p>
+              <img id="researchimage" src="assets/difriicons/research.png"> <p class="ideologydetail">+5% Attack</p>
+              <img src="assets/ideologyicons/conservative.png"> <p class="ideologydetail">+0.5 Actions</p>
+            </div>
+          </div>
+          <div class="ingameideologytooltip liberaltooltip" id="ingame2">
+            <h1 class="ideologyname">LIBERAL</h1>
+            <div class="ideologygridcontainer">
+              <img id="defenseimage" src="assets/difriicons/defense.png"> <p class="ideologydetail">+15% Defense</p>
+              <img id="industryimage" src="assets/difriicons/industry.png"> <p class="ideologydetail">+0.25 Actions</p>
+              <img id="moneyimage" src="assets/difriicons/money6.png"> <p class="ideologydetail">3 turns</p>
+              <img id="researchimage" src="assets/difriicons/research.png"> <p class="ideologydetail">+10% Attack</p>
+            </div>
+          </div>
+          <div class="ingameideologytooltip communisttooltip" id="ingame3">
+            <h1 class="ideologyname">COMMUNIST</h1>
+            <div class="ideologygridcontainer">
+              <img id="defenseimage" src="assets/difriicons/defense.png"> <p class="ideologydetail">+20% Defense</p>
+              <img id="industryimage" src="assets/difriicons/industry.png"> <p class="ideologydetail">+0.75 Actions</p>
+              <img id="moneyimage" src="assets/difriicons/money6.png"> <p class="ideologydetail">N/A</p>
+              <img id="researchimage" src="assets/difriicons/research.png"> <p class="ideologydetail">+10% Attack</p>
+            </div>
+          </div>
+          <div class="ingameideologytooltip anarchisttooltip" id="ingame4">
+            <h1 class="ideologyname">ANARCHIST</h1>
+            <div class="ideologygridcontainer">
+              <img id="defenseimage" src="assets/difriicons/defense.png"> <p class="ideologydetail">N/A</p>
+              <img id="industryimage" src="assets/difriicons/industry.png"> <p class="ideologydetail">+0.25 Actions</p>
+              <img id="moneyimage" src="assets/difriicons/money6.png"> <p class="ideologydetail">N/A</p>
+              <img id="researchimage" src="assets/difriicons/research.png"> <p class="ideologydetail">+5% Attack</p>
+              <img src="assets/ideologyicons/anarchist.png"> <p class="ideologydetail">+2.5 Actions</p>
+            </div>
+          </div>
+          </div>
         </div>
       </div>
     </div>

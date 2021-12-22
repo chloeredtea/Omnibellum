@@ -33,6 +33,7 @@ body {
 }
 
 #header h1{
+    margin-top: 6vmin;
     font-family: "urbanist-bold";
     font-size: 5vmin;
     color: white;
@@ -73,7 +74,7 @@ body {
     font-size: 4vmin;
     width: 45%;
     height: 18%;
-    border-radius: 7px;
+    border-radius: 0;
     background-color: rgb(47, 120, 255);
     color: white;
     transition: 0.25s;
@@ -88,153 +89,110 @@ body {
 
 #roomlistcontainer {
     display: none;
+    width:100%;
+    justify-content: center;
 }
 
 #roomselectcontainerinner {
-    height: 600px;
-    width: 650px;
-    overflow: auto;
+    width: 90vmin;
+    height: 70vmin;
 }
 
 #roomselectcontainer p{
     color: black
 }
 
-/* */
+#topbar{
+    margin-top: 4vmin;
+}
 
+#topbar button{
+    width: 35%;
+    height: 12vmin;
+    font-family: "urbanist-bold";
+    font-size: 4vmin;
+    color: white;
+    transition: .25s;
+    background-color:rgb(66, 107, 54);
+    border-style: solid;
+    border-width: .4vmin;
+    border-color: rgb(45, 59, 22)
+}
 
-button {
-    background-color: #F6F6F6;
-    cursor: pointer;  
-    transition: background-color .5s; 
+#topbar button:hover {
+    background-color:rgb(97, 124, 79);
+}
+
+#quickplay{
+    margin-left: 13%;
+}
+
+#createroombutton{
+    margin-right: 13%;
+}
+
+#roomselectcontainerinner{
     text-align: center;
 }
 
-button:hover {
-    background-color: #DDD;
+#roomstitle{
+    color:white;
+    font-family: "urbanist";
+    font-size: 4vmin;
 }
 
-.flex-row {
-    flex-direction: row;
-    display: flex;
-}
-
-.flex-column {
-    flex-direction: column;
-    display: flex;
-}
-
-.flex-body {
-    display: flex;
-    justify-content: center;
-}
-
-#canvasdiv {
-    background-color: black;
-    margin-bottom: 10px;
-    height: 600px;
-}
-
-#chatbox {
-    background-color: blue;
-    height: 655px;
-    width: 250px;
-    margin-right: 10px;
-}
-
-#infobox {
-    width: 800px;
-    height: 45px;
-    background-color: red;
-    margin-top: 0px;
-}
-
-#playerlist {
-    background-color: green;
-    width: 250px;
-    height: 600px;
-    margin-left: 10px;
-    margin-bottom: 10px;
-}
-
-#turnsremaining {
-    display: flex;
-    background-color: #800080;
-    height: 45px;
-    width: 250px;
-    margin-left: 10px;
-}
-
-#turnsremainingtext {
-    width: 65%;
-    height: 20px;
-    margin-top: 15px;
-    margin-left: 10px;
-    font-size: 14px;
-}
-
-#turnsremainingval {
-    width: 10%;
-    height: 20px;
-    margin-top: 10px;
-    margin-left: 10px;
-    font-variant-numeric: tabular-nums;
-}
-
-#iconcanvas {
-    margin-top: 0px;
-    margin-bottom: 0px;
-    margin-left: 10px;
-}
-
-.nameplate {
-    margin-top: 24px;
-    margin-left: 5px;
-}
-
-#nameplatecontainer {
-    padding-top: 10px;
-}
-
-#nameplatecontainer p {
-    margin-top: 0;
-    padding-top: 0;
-    margin-bottom: 0;
-    padding-bottom: 0;
-}
-
-#ingamecontainer {
-    display: none;
-}
-
-#ingamecontainer p {
-    font-size: 20px;
-    color: white;
-}
-
-
-
-.roomplate {
-    border-style: solid;
-    border-width: 2px;
-    border-color: black;
-    margin-top: 10px;
-    width: 600px;
-    height: 120px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+#roomplatecontainer{
     align-items: center;
 }
 
-.roomplate img {
-    height: 100px;
-    width: 150px;
+.roomplate {
+    border: none;
+    margin-top: 1vmin;
+    width: 40vmin;
+    height: 12vmin;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    background-color:rgb(47, 53, 45);
+    color: white;
+    border-style: solid;
+    border-color:rgb(67, 73, 65);
 }
 
-.roomplate p img {
-    height: 20px;
-    width: 20px;
+.roomplate:hover{
+    background-color:rgb(47, 53, 45);
+    border-color:rgb(155, 107, 5);
+    transition: 0s;
+}
+
+.roomplate img {
+    height: 8vmin;
+    width: 11vmin;
+}
+
+.roomplate div {
+    display: flex;
+    width: 100%;
+    height: 50%;
+    justify-content: space-between;
+    flex-direction: row;
+    align-items: center;
+}
+
+#row1plate {
+    height: 70%;
+}
+
+#row1plate p {
+    max-width: 65%;
+    overflow: hidden;
+}
+
+#row2plate {
+    height: 30%;
+    font-size: 1.5vmin;
+    color: rgb(230, 230, 230);
 }
 
 #topbar {
@@ -243,49 +201,258 @@ button:hover {
     justify-content: space-around;
 }
 
+/* Create Room */
+
 #createroomcontainer {
+    align-items: center;
     display: none;
 }
+
+#backbutton {
+    margin-top: 5vmin;
+    width: 10vmin;
+    margin-right: 45vmin;
+    height: 3.5vmin;
+    font-family: 'urbanist-bold';
+    font-size: 2vmin;
+    border-style: solid;
+    color: white;
+    background-color: rgb(59, 5, 5);
+    border-color: rgb(100, 10, 10);
+    border-width: .2vmin;
+    padding: 0;
+}
+
+#backbutton img{
+    height: 1.5vmin;
+    width: 1.5vmin;
+}
+
+#backbutton:hover {
+    background-color: rgb(131, 4, 4);
+    border-color: rgb(119, 27, 27);
+    transition: .2s;
+}
+
+#createroominnercontainer{
+    margin-top: 5vmin;
+    font-size: 2vmin;
+}
+
+#createroominputs {
+    width: 30vmin;
+    margin-right: 2.5vmin;
+}
+
+#createroominputs div{
+    text-align: center;
+    margin-bottom: 3.2vmin;
+    color: white;
+    font-family: 'urbanist';
+}
+
+#createroominputs div input{
+    width: 20vmin;
+    height: 2vmin;
+    font-size: 1.6vmin;
+    text-align: center;
+    padding: 0;
+    border: 0;
+}
+
+#createroominputs div * {
+    margin: .4vmin;
+}
+
+#createroommaxplayers {
+    align-content: center;
+    justify-content: center;
+}
+
+#createroommaxplayers button{
+    width: 3vmin;
+    height: 3vmin;
+    font-size: 2vmin;
+    font-family: 'urbanist';
+    border: 0;
+    padding: 0;
+}
+
+#createroommaxplayers button:hover {
+    background-color: white;
+}
+
+#maxplayerbutton8 {
+    background-color: #90cc5e;
+}
+
+#maxplayerbutton8:hover {
+    background-color: #90cc5e;
+}
+
+#createroommapselect {
+    width: 30vmin;
+    margin-left: 2.5vmin;
+    justify-content: center;
+}
+
+#createroommap {
+    height: 3.5vmin;
+    font-size: 2.5vmin;
+    margin-bottom: 4vmin;
+    text-align: center;
+    font-family: 'urbanist-bold';
+    border: none;
+}
+
+#createroomconfirm {
+    height: 7.5vmin;
+    width: 20vmin;
+    font-size: 4vmin;
+    font-family: 'urbanist-bold';
+    text-align: center;
+    border: none;
+    margin-top: 3vmin;
+    background-color: rgb(66, 107, 54);
+    color: white;
+    border-style: solid;
+    border-width: .4vmin;
+    border-color: rgb(45, 59, 22)
+}
+
+#createroomconfirm:hover {
+    background-color: rgb(97, 124, 79);
+    transition: .2s;
+}
+/* Lobby Screen */
 
 #inroomcontainer {
     display: none;
+    justify-content: center;
+    align-items: center;
+}
+
+#inroominnercontainer{
+    
+}
+
+#leavebutton{
+    margin-top: 5vmin;
+    width: 10vmin;
+    margin-right: 47.3vmin;
+    height: 3.5vmin;
+    font-family: 'urbanist-bold';
+    font-size: 2vmin;
+    border-style: solid;
+    color: white;
+    background-color: rgb(59, 5, 5);
+    border-color: rgb(100, 10, 10);
+    border-width: .2vmin;
+    padding: 0;
+}
+
+#leavebutton img{
+    height: 1.5vmin;
+    width: 1.5vmin;
+}
+
+#leavebutton:hover {
+    background-color: rgb(131, 4, 4);
+    border-color: rgb(119, 27, 27);
+    transition: .2s;
+}
+
+#roominfo {
+    width: 20vmin;
+    height: 35vmin;
+    padding: 0;
+    margin: 1vmin;
+    margin-right: 5vmin;
+}
+
+.ideologyicon {
+    width: 3.5vmin;
+    height: 3.5vmin;
+    margin-right: .75vmin;
+    margin-top: .8vmin;
+}
+
+.ideologyicon img {
+    width: 3.5vmin;
+    height: 3.5vmin;
+}
+
+.namebox {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    margin-top: 1vmin;
+    height: 3.5vmin;
+    width: 20vmin;
+    padding: 0;
+    border: none;
+    text-align: center;
+    overflow: hidden;
+}
+
+.namebox p {
+    margin: 0;
+    font-family: "urbanist";
+    font-size: 2.2vmin;
+}
+
+.colorbox{
+    height: 2vmin;
+    width: 100%;
+    margin: 0;
+}
+
+#roominfomap {
+    width: 35vmin;
+    height:55vmin;
+    padding: 0;
+    margin: 1vmin;
+    align-items: center;
+    justify-content: center;
+}
+
+#mapimage {
+    width: 28vmin;
+    height: 21vmin;
 }
 
 .colorbutton {
-    height: 40px;
-    width: 40px;
-    margin-left: 5px;
-    margin-top: 5px;
+    height: 3vmin;
+    width: 3vmin;
+    margin-left: .45vmin;
+    margin-top: .45vmin;
+    margin-right: 0;
+    margin-bottom: 0;
+    padding: 0;
+    border-width: 0;
+    font-size: 0;
+    transition: 0s !important; 
 }
 
 #colorbuttons1 {
     text-align: center;
+    padding: 0;
+    width: 100%;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #colorbuttons2 {
     text-align: center;
-    margin-bottom: 30px;
-}
-
-#roominfo {
-    margin-right: 80px;
-}
-
-.colorbox{
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
-}
-
-.namebox{
+    margin: 0;
+    margin-bottom: .3vmin;
+    padding: 0;
+    width: 100%;
     display: flex;
-    flex-direction: row;
-    margin-top: 10px;
-    height: 50px;
-}
-
-#roominfomap {
-    justify-content: space-around;
+    justify-content: center;
+    align-items: center;
 }
 
 #colorbutton1{
@@ -324,14 +491,292 @@ button:hover {
     background-color:#000075
 }
 
+#ideologybuttons{
+    margin-top: 3vmin;
+}
+
+.ideologybutton{
+    height: 5vmin;
+    width: 5vmin;
+    border-width: .2vmin;
+    border-style: solid;
+    margin-right: .3vmin;
+    padding: 0;
+    background-color:rgb(47, 53, 45);
+    border-color:rgb(67, 73, 65);
+    transition: 0s;
+}
+
+.ideologybutton:hover{
+    background-color:rgb(47, 53, 45);
+    border-color:rgb(155, 107, 5);
+    transition: 0s;
+}
+
+.ideologybutton img{
+    width: 4vmin;
+    height: 4vmin;
+    margin: 0;
+    margin-left: -.1vmin;
+    margin-top: .15vmin;
+    padding: 0;
+}
+
+#nationalistbutton{
+    background-color: rgb(65, 44, 18);
+}
+
+#conservativebutton{
+    background-color: rgb(7, 9, 102);
+}
+
+#liberalbutton{
+    background-color: rgb(116, 114, 0);
+}
+
+#communistbutton{
+    background-color: rgb(88, 0, 0);
+}
+
+#anarchistbutton{
+    background-color: rgb(0, 0, 0);
+}
+
+#startbutton {
+    margin-top: 4vmin;
+    background-color:rgb(66, 107, 54);
+    color: white;
+    border-width: .5vmin;
+    border-style: solid;
+    border-color:rgb(45, 59, 22);
+    width: 15vmin;
+    height: 8vmin;
+    font-family: 'urbanist-bold';
+    font-size: 4vmin;
+    transition: .2s;
+    margin-left: 4.5vmin;
+}
+
+#ideologytooltips{
+    height: 15vmin;
+    margin-top: 1vmin;
+}
+
+.ideologytooltip {
+    background-color: green;
+    font-family: 'urbanist';
+    color: white;
+    height: 16vmin;
+    width: 22vmin;
+    font-size: 1.5vmin;
+    display: none;
+    text-align: center;
+    border-style: solid;
+    border-width: .6vmin;
+}
+
+.ideologygridcontainer img {
+    height: 2vmin;
+    width: 2vmin;
+    margin-left: 3vmin;
+    margin-top: .2vmin;
+}
+
+.ideologygridcontainer {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+}
+
+.nationalisttooltip {
+    margin-right: 22vmin;
+    background-color:rgb(65, 44, 18);
+    border-color: rgb(39, 26, 11);
+}
+
+.conservativetooltip{
+    margin-right: 11vmin;
+    background-color:rgb(7, 9, 102);
+    border-color: rgb(4, 5, 63);
+}
+
+.liberaltooltip{
+    background-color: rgb(116, 114, 0);
+    border-color: rgb(75, 73, 0);
+}
+
+.communisttooltip{
+    background-color:rgb(59, 5, 5);
+    border-color: rgb(34, 3, 3);
+    margin-left: 11vmin;
+}
+
+.anarchisttooltip{
+    background-color: black;
+    border-color: gray;
+    margin-left: 22vmin;
+}
+
+.ideologydetail {
+    margin-top: .5vmin;
+    margin-bottom: 0vmin;
+}
+
+#startbutton:hover{
+    background-color: rgb(97, 124, 79);
+    transition: .2s;
+}
+
+/* In Game */
+
+#ingamecontainer {
+    display: none;
+}
+
+.nameplate{
+    font-family: 'urbanist-bold';
+    font-size: 24px;
+    color: white;
+    margin-left: 10px;
+    margin-top: -32px;
+}
+
+.infodiv {
+    margin-top: -35px;
+    width: 100px;
+    justify-content: space-around;
+    font-family: 'urbanist-bold';
+    font-size: 24px;
+    color: white;
+}
+
+.ideologyimage {
+    width: 40px;
+    height: 40px;
+    margin-top: 15px;
+}
+
+.ingameideologytooltip div img {
+    width: 20px !important;
+    height: 20px !important;
+    margin-top: 4% !important;
+    margin-left: 15% !important;
+}
+
+#turnsremainingdiv {
+    display: flex;
+    text-align: center;
+    font-family: 'urbanist-bold';
+    color: white;
+    height: 45px;
+    width: 100%;
+    margin-left: 10px;
+}
+
+#turnsremaining {
+    width: 100%;
+    height: 20px;
+    margin-top: 15px;
+    margin-left: 10px;
+    font-size: 40px;
+}
+
+.ingameideologytooltip {
+    font-family: 'urbanist';
+    color: white;
+    height: 180px;
+    width: 270px;
+    font-size: 18px;
+    position: absolute;
+    top: 400px;
+    display: none;
+    text-align: center;
+    border-style: solid;
+    border-width: .6vmin;
+    margin: 0 !important;
+}
+
+#iconcanvas {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: 10px;
+}
+
+.buildbutton {
+    width: 65px;
+    height: 65px;
+    margin: 7px;
+    margin-right: 40px;
+    border-radius: 50px;
+    background-color: rgb(0, 0, 0, .6);
+}
+
+.buildbutton:hover {
+    background-color: rgb(100, 100, 100, .5)
+}
+
+.buildbutton img {
+    width: 40px;
+    height: 40px;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
+    margin-right: 1px;
+}
+
+#buildbuttondiv {
+    height: 80%;
+    justify-content: center;
+}
+
+/* End Screen */
+
 #endscreencontainer{
-    width: 400px;
-    background-color: pink;
+    background-color: rgb(0, 0, 0, .6);
     position: absolute;
     display: none;
-    top: 250px;
+    color: white;
+    font-family: "urbanist-bold";
+    font-size: 30px;
+    padding: 50px;
+    top: 300px;
     left: 50%;
     transform: translate(-50%, 0);
+    display: none;
+    justify-content: center;
+}
+
+#endscreencontainer button {
+    font-family: "urbanist";
+    font-size: 14px;
+    width: 50px;
+    margin-top: 20px;
+    margin-left: 42%;
+}
+
+/* General */
+
+button {
+    cursor: pointer;
+    transition: .2s;
+}
+
+button:hover {
+    transition: .2s;
+}
+
+.flex-row {
+    flex-direction: row;
+    display: flex;
+}
+
+.flex-column {
+    flex-direction: column;
+    display: flex;
+}
+
+.flex-body {
+    display: flex;
+    justify-content: center;
 }
 
 /* Footer */

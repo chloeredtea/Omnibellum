@@ -66,6 +66,7 @@ class Game {
             this.players[i][0].emit("mapdata", spritesheets[this.map], mapData[this.map])
         }
         this.gamestate = "claim";
+        this.BroadcastPlayers();
         this.BroadcastNewGamestate();
     }
 
@@ -117,7 +118,7 @@ class Game {
     }
     
     AdvanceTurn(depth = 0){
-        if(depth > 8){
+        if(depth > 7){
             this.DeleteGame();
         }
         this.turn = (this.turn + 1) % this.players.length;
@@ -213,6 +214,11 @@ class Game {
         for(let i = 0; i < this.players.length; i++){
             this.players[i][0].emit("gamestate", this.gamestate);
         }
+        if(this.gamestate == "conquest"){
+            for(let i = 0; i < this.players.length; i++){
+                this.players[i][0].emit("conquest", 0, -1, false, this.turn, this.subturn, this.maxsubactions, this.statecounts, this.players[this.turn][2]);
+            }
+        }
         if(this.gamestate == "endscreen"){
             for(let i = 0; i < this.players.length; i++){
                 this.players[i][0].emit("winner", this.winner);
@@ -225,7 +231,9 @@ class Game {
         for(let i = 0; i < this.players.length; i++){
             sendarray.push(this.players[i].slice(1));
         }
+        sendarray.push(this.maxplayers);
         for(let i = 0; i < this.players.length; i++){
+            this.players[i][0].emit("playernum", i);
             this.players[i][0].emit("players", sendarray);
         }
     }
@@ -289,6 +297,7 @@ class Game {
     Build(tile){
         if(this.stateowners[tile] != -1 && this.players[this.stateowners[tile]][2] > 0){
             this.gamestate = "build";
+            this.BroadcastNewGamestate();
             this.buildcount++;
             this.fincountdowns[tile] = ideologymodifiers[this.players[this.stateowners[tile]][5]][2];
         }
@@ -307,6 +316,14 @@ class Game {
             }
         }
     }
+
+    ChangeIdeology(type, playernum){
+        if(type >= 0 && type < 5){
+            this.players[playernum][5] = type;
+            this.BroadcastPlayers();
+        }
+    }
+
 }
 
 
@@ -316,7 +333,7 @@ let roomnum = 0;
 
 io.on('connection', socket => {
     socket.on("createroom", (roomname, roompassword, maxplayers, roommap, name) => {
-        if(maxplayers < 9 && maxplayers > 1 && Math.round(maxplayers) == maxplayers){
+        if(maxplayers < 9 && maxplayers > 1 && Math.round(maxplayers) == maxplayers && mapData.hasOwnProperty(roommap)){
             socket.game = new Game(roomname, roompassword, maxplayers, roommap, roomnum);
             roomnum++;
             socket.game.players.push([socket, 0, 1, 0, [], 0, name]);
@@ -355,7 +372,7 @@ io.on('connection', socket => {
         let roomemitdata = [];
         for(let i = 0; i < gamelist.length; i++){
             if(gamelist[i].gamestate == "roomlobby"){
-                roomemitdata.push([gamelist[i].name, gamelist[i].players.length, gamelist[i].maxplayers, gamelist[i].map, gamelist[i].roomnum]);
+                roomemitdata.push([gamelist[i].name, gamelist[i].players.length, gamelist[i].maxplayers, gamelist[i].map, gamelist[i].roomnum, gamelist[i].password == "" ? false : true]);
             }
         }
         socket.emit("roomlist", roomemitdata);
@@ -406,6 +423,12 @@ io.on('connection', socket => {
     socket.on("build", (index, type) =>{
         if(socket.game != null){
             socket.game.BuildImprovement(index, type);
+        }
+    })
+
+    socket.on("changeideology", (type) =>{
+        if(socket.game != null){
+            socket.game.ChangeIdeology(type, socket.playernum);
         }
     })
 
