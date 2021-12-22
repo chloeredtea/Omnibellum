@@ -125,9 +125,7 @@ function InitSocketFunctions(){
             for(let i = 0; i < metadata.length; i++){
                 game.stateowners.push(-1);
                 game.improvements.push([]);
-            }
-            for(let i = 0; i < game.metadata.length; i++){
-                game.improvements[i] = [...game.improvements[i], ...game.metadata[i][9]];
+                game.fincountdowns.push(0);
             }
             game.sctx.globalCompositeOperation = "source-atop";
             game.Draw(); 
@@ -141,7 +139,7 @@ function InitSocketFunctions(){
         }
     })
     // tile is -1 if just updating subactions
-    socket.on("conquest", (player, tile, success, turn, subaction, maxsubactions, statecount, currentmaxsubactions) => {
+    socket.on("conquest", (player, tile, success, turn, subaction, maxsubactions, statecount, currentmaxsubactions, fincountdowns) => {
         if(success){
             for(let i = 0; i < maxsubactions.length; i++){
                 dom["" + i + "info"].innerText = maxsubactions[i];
@@ -158,6 +156,7 @@ function InitSocketFunctions(){
         if(tile == -1){
             dom.turnsremaining.innerText = (currentmaxsubactions - subaction) + " Actions Remaining";
         }
+        game.fincountdowns = fincountdowns;
     });
 
     socket.on("gamestate", (gamestate) => {
@@ -231,13 +230,11 @@ function InitSocketFunctions(){
     socket.on("build", (buildcount) =>{
         game.gamestate = "build";
         game.buildcount = buildcount;
+        dom.turnsremaining.innerText = "Build " + buildcount + " Improvements";
     })
 
     socket.on("improvements", (improvements)=>{
         game.improvements = improvements;
-        for(let i = 0; i < game.metadata.length; i++){
-            game.improvements[i] = [...game.improvements[i], ...game.metadata[i][9]];
-        }
     })
 }
 
@@ -249,6 +246,7 @@ class Game {
         this.spritesheet = document.createElement("canvas");
         this.sctx = this.spritesheet.getContext("2d");
         this.metadata;
+        this.fincountdowns = [];
         this.oldmousex = 0;
         this.oldmousey = 0;
         this.buildtype = 0;
@@ -299,6 +297,11 @@ class Game {
                             if(mouseclick){
                                 if(!this.improvements[i].includes(this.buildtype)){
                                     socket.emit("build", i, this.buildtype);
+                                    game.buildcount--;
+                                    if(game.buildcount > 0){
+                                        dom.turnsremaining.innerText = "Build " + game.buildcount + " Improvements";
+                                    }
+                                    
                                 }
                             }
                         }
@@ -345,7 +348,12 @@ class Game {
                             ctx.drawImage(document.getElementById("researchimage"), this.metadata[i][10] - this.improvements[i].length*10 + j*20 - 5, this.metadata[i][11] - 10)
                         }
                         else if(this.improvements[i][j] == 2){
-                            ctx.drawImage(document.getElementById("moneyimage"), this.metadata[i][10] - this.improvements[i].length*10 + j*20 - 5, this.metadata[i][11] - 10)
+                            let moneynum = 7 - this.fincountdowns[i];
+                            if(this.fincountdowns[i] < 1){
+                                moneynum = 1;
+                            }
+                            console.log(moneynum);
+                            ctx.drawImage(document.getElementById("moneyimage" + moneynum), this.metadata[i][10] - this.improvements[i].length*10 + j*20 - 5, this.metadata[i][11] - 10)
                         }
                         else if(this.improvements[i][j] == 1){
                             ctx.drawImage(document.getElementById("industryimage"), this.metadata[i][10] - this.improvements[i].length*10 + j*20 - 5, this.metadata[i][11] - 10)

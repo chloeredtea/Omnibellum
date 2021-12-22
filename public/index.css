@@ -753,6 +753,12 @@ body {
     margin-left: 42%;
 }
 
+/* Hidden */
+
+#hidden {
+    display: none;
+}
+
 /* General */
 
 button {

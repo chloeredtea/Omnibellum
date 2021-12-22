@@ -59,6 +59,11 @@ class Game {
             this.fincountdowns.push(-1);
             this.tileimprovements.push([]);
         }
+        for(let i = 0; i < mapData[this.map].length - 2; i++){
+            for(let j = 0; j < mapData[this.map][i+2][9].length; j++){
+                this.tileimprovements[i].push(mapData[this.map][i+2][9][j]);
+            }
+        }
     }
 
     Start(){
@@ -68,6 +73,9 @@ class Game {
         this.gamestate = "claim";
         this.BroadcastPlayers();
         this.BroadcastNewGamestate();
+        for(let i = 0; i < this.players.length; i++){
+            this.players[i][0].emit("improvements", this.tileimprovements);
+        }
     }
 
     Attack(index, playernumber){
@@ -154,7 +162,7 @@ class Game {
         let success = false;
         let roll = Math.random();
         let defense = 0.6;
-        if(mapData[this.map][tile+2][9].includes(0)){
+        if(this.tileimprovements[tile].includes(0)){
             if(this.stateowners[tile] != -1){
                 defense += ideologymodifiers[this.players[this.stateowners[tile]][5]][0];
                 if(ideologymodifiers[this.players[this.stateowners[tile]][5]][4][0] == 0){
@@ -173,13 +181,13 @@ class Game {
             success = true;
         }
         if(success){
-            for(let i = 0; i < mapData[this.map][tile+2][9].length; i++){
-                this.players[player][4].push(mapData[this.map][tile+2][9][i]);
-                if(mapData[this.map][tile+2][9][i] == 2){
+            for(let i = 0; i < this.tileimprovements[tile].length; i++){
+                this.players[player][4].push(this.tileimprovements[tile][i]);
+                if(this.tileimprovements[tile][i] == 2){
                     this.fincountdowns[tile] = ideologymodifiers[this.players[player][5]][2];
                 }
                 if(this.stateowners[tile] != -1){
-                    this.players[this.stateowners[tile]][4].splice(this.players[this.stateowners[tile]][4].indexOf(mapData[this.map][tile+2][9][i]), 1);
+                    this.players[this.stateowners[tile]][4].splice(this.players[this.stateowners[tile]][4].indexOf(this.tileimprovements[tile][i]), 1);
                 }
             }
             this.stateowners[tile] = player;
@@ -206,7 +214,7 @@ class Game {
             this.maxsubactions[i] = 1 + Math.floor(baseapval + this.statecounts[i]*.25+Count(this.players[i][4], 1)*ideologymodifiers[this.players[i][5]][1])
         }
         for(let i = 0; i < this.players.length; i++){
-            this.players[i][0].emit("conquest", player, tile, success, this.turn, this.subturn, this.maxsubactions, this.statecounts, this.players[this.turn][2]);
+            this.players[i][0].emit("conquest", player, tile, success, this.turn, this.subturn, this.maxsubactions, this.statecounts, this.players[this.turn][2], this.fincountdowns);
         }
     }
 
@@ -216,7 +224,7 @@ class Game {
         }
         if(this.gamestate == "conquest"){
             for(let i = 0; i < this.players.length; i++){
-                this.players[i][0].emit("conquest", 0, -1, false, this.turn, this.subturn, this.maxsubactions, this.statecounts, this.players[this.turn][2]);
+                this.players[i][0].emit("conquest", 0, -1, false, this.turn, this.subturn, this.maxsubactions, this.statecounts, this.players[this.turn][2], this.fincountdowns);
             }
         }
         if(this.gamestate == "endscreen"){
@@ -306,7 +314,12 @@ class Game {
     BuildImprovement(tile, type){
         if(type <= 3 && this.stateowners[tile] == this.turn){
             this.tileimprovements[tile].push(type);
+            this.players[this.turn][4].push(type);
             this.buildcount--;
+            
+            if(type == 2){
+                this.fincountdowns[tile] = ideologymodifiers[this.players[this.turn][5]][2];
+            }
             for(let i = 0; i < this.players.length; i++){
                 this.players[i][0].emit("improvements", this.tileimprovements);
             }
