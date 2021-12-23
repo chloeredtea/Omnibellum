@@ -41,6 +41,7 @@ const modifiercolors = [
 const mapnamedictionary = {
     "unitedstates": "United States",
     "europe": "Europe",
+    "world": "World",
 }
 
 const ideologydict = [
@@ -155,6 +156,11 @@ function InitSocketFunctions(){
             if(game.gamestate == "claim"){
                 game.playersfinishedclaiming[player] = true;
             }
+        }
+        else if(tile != -1){
+            game.attackfailedanimation = .3;
+            game.attackedtile = tile;
+            game.oldtime = performance.now() / 1000;
         }
         if(game.gamestate == "conquest"){
             game.turn = turn;
@@ -298,6 +304,9 @@ class Game {
         this.oldmousex = 0;
         this.oldmousey = 0;
         this.buildtype = 0;
+        this.attackfailedanimation = 0;
+        this.attackedtile = -1;
+        this.oldtime;
         this.gamestate = "welcome";
         this.highlightedstate = null;
         this.maxplayers = 8;
@@ -383,13 +392,36 @@ class Game {
                 this.sctx.fillRect(0, this.metadata[this.highlightedstate][5] - 1, this.spritesheet.width, this.metadata[this.highlightedstate][2]);
     
             }
+            if(this.attackfailedanimation > 0){
+                this.attackfailedanimation -= performance.now() / 1000 - this.oldtime;
+                
+                this.oldtime = performance.now() / 1000
+                if(Math.round(this.oldtime*15) % 2 == 1){
+                    this.sctx.fillStyle = "#F00";
+                }
+                else{
+                    this.sctx.fillStyle = "#FFF";
+                }
+                this.sctx.fillRect(0, this.metadata[this.attackedtile][5] - 1, this.spritesheet.width, this.metadata[this.attackedtile][2]);
+                ctx.drawImage(this.spritesheet, 0, this.metadata[this.attackedtile][5] - 1, this.metadata[this.attackedtile][1], this.metadata[this.attackedtile][2], this.metadata[this.attackedtile][3] - 1, this.metadata[this.attackedtile][4], this.metadata[this.attackedtile][1], this.metadata[this.attackedtile][2]);
+                ctx.drawImage(this.spritesheet, 0, this.metadata[this.attackedtile][5] - 1, this.metadata[this.attackedtile][1], this.metadata[this.attackedtile][2], this.metadata[this.attackedtile][3] + 1, this.metadata[this.attackedtile][4], this.metadata[this.attackedtile][1], this.metadata[this.attackedtile][2]);
+                ctx.drawImage(this.spritesheet, 0, this.metadata[this.attackedtile][5] - 1, this.metadata[this.attackedtile][1], this.metadata[this.attackedtile][2], this.metadata[this.attackedtile][3], this.metadata[this.attackedtile][4] - 1, this.metadata[this.attackedtile][1], this.metadata[this.attackedtile][2]);
+                ctx.drawImage(this.spritesheet, 0, this.metadata[this.attackedtile][5] - 1, this.metadata[this.attackedtile][1], this.metadata[this.attackedtile][2], this.metadata[this.attackedtile][3], this.metadata[this.attackedtile][4] + 1, this.metadata[this.attackedtile][1], this.metadata[this.attackedtile][2]);
+                this.sctx.fillStyle = "#999"
+                this.sctx.fillRect(0, this.metadata[this.attackedtile][5] - 1, this.spritesheet.width, this.metadata[this.attackedtile][2]);
+                if(this.attackfailedanimation < 0){
+                    this.attackedtile = -1;
+                }
+            }
             if(this.metadata != undefined){
                 for(let i = 0; i < this.metadata.length; i++){
                     if(this.stateowners[i] != -1){
                         this.sctx.fillStyle = colors[this.players[this.stateowners[i]][2]];
                         this.sctx.fillRect(0, this.metadata[i][5] - 1, this.spritesheet.width, this.metadata[i][2]);
                     }
-                    ctx.drawImage(this.spritesheet, 0, this.metadata[i][5] - 1, this.metadata[i][1], this.metadata[i][2], this.metadata[i][3], this.metadata[i][4], this.metadata[i][1], this.metadata[i][2]);
+                    if(this.attackedtile != i){
+                        ctx.drawImage(this.spritesheet, 0, this.metadata[i][5] - 1, this.metadata[i][1], this.metadata[i][2], this.metadata[i][3], this.metadata[i][4], this.metadata[i][1], this.metadata[i][2]);
+                    }
                 }
                 for(let i = 0; i < this.metadata.length; i++){
                     for(let j = 0; j < this.improvements[i].length; j++){
@@ -569,13 +601,14 @@ function Leave(){
 }
 
 function LeaveFinishedGame(){
-    game.gamestate = "roomselect";
+    
     Leave();
     dom.ingamelargecontainer.style.display = "none";
     dom.endscreenlargecontainer.style.display = "none";
     dom.roomslargecontainer.style.display = "flex";
     clearInterval(game.gameInterval);
     game = new Game();
+    game.gamestate = "roomselect";
 }
 
 function PlayButton(){
