@@ -347,23 +347,41 @@ let roomnum = 0;
 
 io.on('connection', socket => {
     socket.on("createroom", (roomname, roompassword, maxplayers, roommap, name) => {
-        if(maxplayers < 9 && maxplayers > 1 && Math.round(maxplayers) == maxplayers && mapData.hasOwnProperty(roommap)){
-            socket.game = new Game(roomname, roompassword, maxplayers, roommap, roomnum);
-            roomnum++;
-            socket.game.players.push([socket, 0, 1, 0, [], 0, name]);
-            gamelist.push(socket.game);
-            socket.game.BroadcastPlayers();
-            socket.playernum = 0;
+        if(socket.game == null){
+            if(maxplayers < 9 && maxplayers > 1 && Math.round(maxplayers) == maxplayers && mapData.hasOwnProperty(roommap)){
+                socket.game = new Game(roomname, roompassword, maxplayers, roommap, roomnum);
+                roomnum++;
+                socket.game.players.push([socket, 0, 1, 0, [], 0, name]);
+                gamelist.push(socket.game);
+                socket.game.BroadcastPlayers();
+                socket.playernum = 0;
+            }
         }
     })
 
-    socket.on("joinroom", (id, name) =>{
-        for(let i = 0; i < gamelist.length; i++){
-            if(id==gamelist[i].roomnum && gamelist[i].players.length < gamelist[i].maxplayers){
-                socket.game = gamelist[i];
-                socket.playernum = socket.game.players.length;
-                socket.game.players.push([socket, socket.game.players.length, 1, socket.game.unclaimedcolors.shift(), [], 4, name]);
-                socket.game.BroadcastPlayers();
+    socket.passwordattempt = false;
+    socket.on("joinroom", (id, name, password) =>{
+        if(socket.game == null){
+            for(let i = 0; i < gamelist.length; i++){
+                if(id==gamelist[i].roomnum && gamelist[i].players.length < gamelist[i].maxplayers){
+                    if(!socket.passwordattempt){
+                        socket.passwordattempt = true;
+                        setTimeout(()=>{
+                            if(gamelist[i].password == password){
+                                socket.emit("passwordsuccess", true);
+                                socket.game = gamelist[i];
+                                socket.playernum = socket.game.players.length;
+                                socket.game.players.push([socket, socket.game.players.length, 1, socket.game.unclaimedcolors.shift(), [], 4, name]);
+                                socket.game.BroadcastPlayers();
+                                socket.passwordattempt = false;
+                            }
+                            else {
+                                socket.emit("passwordsuccess", false);
+                                socket.passwordattempt = false;
+                            }
+                        }, 100)
+                    }
+                }
             }
         }
     })
@@ -423,8 +441,10 @@ io.on('connection', socket => {
     })
 
     socket.on("start", ()=>{
-        if(socket.game != null){
-            socket.game.Start();
+        if(socket.game != null && socket.game.gamestate == "roomlobby"){
+            if(socket.playernum == 0){
+                socket.game.Start();
+            }
         }
     })
 
@@ -441,8 +461,16 @@ io.on('connection', socket => {
     })
 
     socket.on("changeideology", (type) =>{
-        if(socket.game != null){
+        if(socket.game != null && Number.isInteger(type) && type >= 0 && type < 5){
             socket.game.ChangeIdeology(type, socket.playernum);
+        }
+    })
+
+    socket.on("kick", (num)=> {
+        if(socket.game != null && socket.playernum == 0 && socket.game.gamestate == "roomlobby" && Number.isInteger(num) && socket.game.players.length > num && num > 0){
+            socket.game.players[num][0].emit("kicked", true);
+            socket.game.players[num][0].game = null;
+            socket.game.RemovePlayer(num);
         }
     })
 

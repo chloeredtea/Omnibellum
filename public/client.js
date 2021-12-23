@@ -40,6 +40,7 @@ const modifiercolors = [
 
 const mapnamedictionary = {
     "unitedstates": "United States",
+    "europe": "Europe",
 }
 
 const ideologydict = [
@@ -111,6 +112,12 @@ function Init(){
 function InitSocketFunctions(){
     socket.on("playernum", (playernum) => {
         game.player = playernum;
+        if(playernum == 0){
+            document.getElementById("startbutton").style.display = "flex";
+        }
+        else{
+            document.getElementById("startbutton").style.display = "none";
+        }
     })
     socket.on("mapdata", (spritesheet, metadata) => {
         game.spritesheet.width = metadata[0] + 0;
@@ -176,13 +183,15 @@ function InitSocketFunctions(){
     })
 
     socket.on("players", (players) =>{
+        if(game.gamestate == "roomselect"){
+            game.gamestate = "roomlobby";
+        }
         if(game.gamestate != "endscreen"){
             game.players = players.slice(0, -1);
             game.maxplayers = players[players.length - 1]
         }
         game.UpdatePlayers();
     })
-
     socket.on("roomlist", (data)=>{ // Name, Players, Max Players, Map, Roomid, Password
         gamelist = data;
         while(dom.roomplatecontainer.firstChild){
@@ -196,9 +205,19 @@ function InitSocketFunctions(){
             let roomimageplate = document.createElement("img");
             let roomnumplate = document.createElement("p");
             let mapnameplate = document.createElement("p");
+            let roomnamecontainer = document.createElement("div");
+
+            roomnamecontainer.id = "roomnamecontainer";
 
             roomplate.classList.add("roomplate")
-            roomnameplate.innerHTML = data[i][0];
+            if(data[i][5]){
+                let lockimage = document.createElement("img");
+                lockimage.id = "lockimage";
+                lockimage.src = "assets/locked.png";
+                roomnamecontainer.appendChild(lockimage)
+            }
+            roomnameplate.innerText = data[i][0];
+            roomnamecontainer.appendChild(roomnameplate);
             let length = data[i][0].length;
             if(length > 38){
                 length = 38;
@@ -213,15 +232,24 @@ function InitSocketFunctions(){
             row1plate.setAttribute("id", "row1plate");
             row2plate.setAttribute("id", "row2plate");
 
-            row1plate.appendChild(roomnameplate);
+            row1plate.appendChild(roomnamecontainer);
             row1plate.appendChild(roomimageplate);
             row2plate.appendChild(roomnumplate);
             row2plate.appendChild(mapnameplate);
             roomplate.appendChild(row1plate);
             roomplate.appendChild(row2plate);
 
+            roomplate.id = i;
+
             roomplate.onclick = () =>{
-                game.JoinRoom(data[i][4])
+                if(data[i][5]){
+                    document.getElementById("passwordprompt").style.display = "flex";
+                    game.roomattempt = i;
+                }
+                else{
+                    game.JoinRoom(data[i][4]);
+                }
+                
             }
             dom.roomplatecontainer.appendChild(roomplate);
         }
@@ -235,6 +263,26 @@ function InitSocketFunctions(){
 
     socket.on("improvements", (improvements)=>{
         game.improvements = improvements;
+    })
+
+    socket.on("passwordsuccess", (success) =>{
+        if(success){
+            dom.roomslargecontainer.style.display = "none";
+            dom.inroomlargecontainer.style.display = "flex";
+            document.getElementById("enterpasswordprompt").style.borderColor = "#000";
+            document.getElementById("enterpasswordtext").innerText = "ENTER PASSWORD"
+            this.gamestate = "roomlobby";
+        }
+        else{
+            document.getElementById("enterpasswordprompt").style.borderColor = "#F00";
+            document.getElementById("enterpasswordtext").innerText = "WRONG PASSWORD. TRY AGAIN"
+        }
+    })
+
+    socket.on("kicked", (success) =>{
+        if(success){
+            ReturnToRoomSelect();
+        }
     })
 }
 
@@ -254,6 +302,7 @@ class Game {
         this.highlightedstate = null;
         this.maxplayers = 8;
         this.player = 0;
+        this.roomattempt = 0;
         this.ideology = Math.floor((Math.random() * 5));
         this.winner = null;
         this.buildcount = 0;
@@ -295,7 +344,7 @@ class Game {
                         }
                         else if(this.gamestate == "build"){
                             if(mouseclick){
-                                if(!this.improvements[i].includes(this.buildtype)){
+                                if(!this.improvements[i].includes(this.buildtype) && this.stateowners[i] == this.turn){
                                     socket.emit("build", i, this.buildtype);
                                     game.buildcount--;
                                     if(game.buildcount > 0){
@@ -352,7 +401,6 @@ class Game {
                             if(this.fincountdowns[i] < 1 || moneynum < 1){
                                 moneynum = 1;
                             }
-                            console.log(moneynum);
                             ctx.drawImage(document.getElementById("moneyimage" + moneynum), this.metadata[i][10] - this.improvements[i].length*10 + j*20 - 5, this.metadata[i][11] - 10)
                         }
                         else if(this.improvements[i][j] == 1){
@@ -390,11 +438,8 @@ class Game {
         socket.emit("refreshrooms");
     }
 
-    JoinRoom(id){
-        socket.emit("joinroom", id, username);
-        dom.roomslargecontainer.style.display = "none";
-        dom.inroomlargecontainer.style.display = "flex";
-        this.gamestate = "roomlobby";
+    JoinRoom(id, password = ""){
+        socket.emit("joinroom", id, username, password);
     }
 
     UpdatePlayers(){
@@ -439,6 +484,10 @@ class Game {
                 document.getElementById("namebox" + (i+1)).style.backgroundColor = "#FFF"
                 document.getElementById("namebox" + (i+1)).style.visibility = "visible";
                 document.getElementById("ideologyicon" + (i+1)).style.visibility = "visible";
+                if(i > 0){
+                    document.getElementById("kickimg" + i).style.visibility = "hidden";
+                    document.getElementById("kick" + i).style.visibility = "hidden";
+                }
             }
             document.getElementById("colorbutton9").style.visibility = "visible";
             for(let i = 0; i < this.players.length; i++){
@@ -446,6 +495,10 @@ class Game {
                 document.getElementById("inroomcolor" + (i+1)).style.backgroundColor = colors[this.players[i][2]];
                 document.getElementById("colorbutton" + (this.players[i][2]+1)).style.visibility = "hidden";
                 document.getElementById("ideologyiconimage" + (i+1)).src = "assets/ideologyicons/" + ideologydict[this.players[i][4]] + ".png";
+                if(i > 0 && this.player == 0){
+                    document.getElementById("kickimg" + i).style.visibility = "visible";
+                    document.getElementById("kick" + i).style.visibility = "visible";
+                }
             }
             for(let i = this.players.length; i < 8; i++){
                 document.getElementById("namebox" + (i+1)).style.backgroundColor = "#888"
@@ -492,6 +545,7 @@ function CreateRoomSubmit(){
 
 function ReturnToRoomSelect(){
     game.gamestate = "roomselect";
+    document.getElementById("passwordprompt").style.display = "none";
     Leave();
     dom.createroomlargecontainer.style.display = "none";
     dom.inroomlargecontainer.style.display = "none";
@@ -529,6 +583,7 @@ function PlayButton(){
     dom.welcomelargecontainer.style.display = "none";
     dom.roomslargecontainer.style.display = "flex";
     dom.header.style.display = "inline";
+    document.getElementById("passwordprompt").style.display = "none";
     if(dom.username.value == ""){
         username = "Anonymous"
     }
@@ -537,6 +592,11 @@ function PlayButton(){
         if(username.length > 15){
             username = username.substring(0, 15);
         }
+    }
+    if(dom.username.value.toLowerCase() == "partisa"){
+        document.body.style.backgroundImage = "url('assets/partisa.png')";
+        document.body.style.backgroundPosition = "center 0px";
+        console.log("partisa");
     }
 }
 
@@ -573,4 +633,12 @@ function ChangeMapSelectImage(select){
     image.src="/assets/" + select.options[select.selectedIndex].value + ".png";
     image = document.getElementById("mapimage");
     image.src="/assets/" + select.options[select.selectedIndex].value + ".png";
+}
+
+function SubmitPassword(){
+    game.JoinRoom(gamelist[game.roomattempt][4], document.getElementById("enterpasswordprompt").value);
+}
+
+function Kick(num){
+    socket.emit("kick", num);
 }

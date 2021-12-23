@@ -1,3 +1,10 @@
+* {
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
 html, body {
     min-height: 100%;
 }
@@ -40,10 +47,6 @@ body {
 }
 
 /* Welcome Screen */
-
-#welcomecontainer {
-
-}
 
 #welcomebox {
     background-color: white;
@@ -180,6 +183,18 @@ body {
     align-items: center;
 }
 
+#roomnamecontainer {
+    display: flex;
+    width: 100%;
+    justify-content: left;
+    gap: 1vmin;
+}
+
+#lockimage {
+    height: 3vmin;
+    width: 3vmin;
+}
+
 #row1plate {
     height: 70%;
 }
@@ -199,6 +214,74 @@ body {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+}
+
+#passwordprompt {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top:0;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(0, 0, 0, .85);
+    color: white;
+    font-family: 'urbanist-bold';
+    font-size: 3vmin;
+}
+
+#passwordback {
+    width: 10vmin;
+    height: 3.5vmin;
+    font-family: 'urbanist-bold';
+    font-size: 2vmin;
+    border-style: solid;
+    color: white;
+    background-color: rgb(59, 5, 5);
+    border-color: rgb(100, 10, 10);
+    border-width: .2vmin;
+    padding: 0;
+}
+
+#passwordback img{
+    height: 1.5vmin;
+    width: 1.5vmin;
+    margin-right: .5vmin;
+}
+
+#passwordback:hover {
+    background-color: rgb(131, 4, 4);
+    border-color: rgb(119, 27, 27);
+    transition: .2s;
+}
+
+#enterpasswordprompt {
+    margin-top: -1.5vmin;
+    width: 25vmin;
+    margin-bottom: 2.5vmin;
+    text-align: center;
+    height: 2vmin;
+    font-size: 1.5vmin;
+}
+
+#submitpassword{
+    width: 15vmin;
+    height: 5vmin;
+    font-family: 'urbanist-bold';
+    font-size: 3vmin;
+    border-style: solid;
+    color: white;
+    background-color: rgb(5, 59, 8);
+    border-color: rgb(13, 100, 10);
+    border-width: .35vmin;
+    padding: 0;
+}
+
+#submitpassword:hover {
+    background-color: rgb(8, 131, 4);
+    border-color: rgb(30, 119, 27);
+    transition: .2s;
 }
 
 /* Create Room */
@@ -332,10 +415,6 @@ body {
     align-items: center;
 }
 
-#inroominnercontainer{
-    
-}
-
 #leavebutton{
     margin-top: 5vmin;
     width: 10vmin;
@@ -363,11 +442,33 @@ body {
 }
 
 #roominfo {
-    width: 20vmin;
+    width: 24.25vmin;
     height: 35vmin;
     padding: 0;
     margin: 1vmin;
     margin-right: 5vmin;
+}
+
+#crownicon{
+    width: 3.5vmin;
+    height: 3.5vmin;
+    margin-right: .75vmin;
+    margin-top: .8vmin;
+}
+
+.kick{
+    background: none;
+    width: 3.5vmin;
+    height: 3.5vmin;
+    margin-right: .75vmin;
+    margin-top: .8vmin;
+    border: none;
+}
+
+.kickimg{
+    width: 3.5vmin;
+    height: 3.5vmin;
+    margin-right: 1.5vmin;
 }
 
 .ideologyicon {
@@ -554,7 +655,8 @@ body {
     font-family: 'urbanist-bold';
     font-size: 4vmin;
     transition: .2s;
-    margin-left: 4.5vmin;
+    margin-left: 9vmin;
+    text-align: center;
 }
 
 #ideologytooltips{

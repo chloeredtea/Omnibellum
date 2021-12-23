@@ -17,11 +17,17 @@
     <div id="welcomecontainer" class="flex-body">
       <div id="welcomebox" class="flex-column">
         <h1 id="welcometitle">OMNIBELLUM</h1>
-        <input type="text" id="username" placeholder="USERNAME">
+        <input autocomplete="off" type="text" id="username" placeholder="USERNAME">
         <button id="playbutton" onclick="PlayButton()">PLAY</button>
       </div>
     </div>
     <div id="roomlistcontainer" class="flex-body">
+      <div id="passwordprompt">
+        <button id="passwordback" onclick="PlayButton();"><img src="assets/backarrow.png" />BACK</button>
+        <p id="enterpasswordtext">ENTER PASSWORD</p>
+        <input autocomplete="off" type="text" id="enterpasswordprompt">
+        <button id="submitpassword" onclick="SubmitPassword();">SUBMIT</button>
+      </div>
       <div class="flex-column">
         <div class="flex-row" id="topbar">
           <button id="quickplay" onclick="QuickPlay();">QUICK PLAY</button>
@@ -37,15 +43,15 @@
     <div id="createroomcontainer" class="flex-column">
       <button onclick="ReturnToRoomSelect()" id="backbutton"> <img src="assets/backarrow.png" /> BACK</button>
       <div id="createroominnercontainer" class="flex-body">
-        <div id="createroominputs" class="flex-column">
+        <div autocomplete="off" id="createroominputs" class="flex-column">
           <div>
             <h2>Room Name</h2>
-            <input type="text" id="createroomname">
+            <input autocomplete="off" type="text" id="createroomname">
           </div>
           <div>
             <h2>Room Password</h2>
             <p>(Optional)</p>
-            <input type="text" id="createroompassword">
+            <input autocomplete="off" type="text" id="createroompassword">
           </div>
           <div>
             <h2>Max Players</h2>
@@ -75,6 +81,7 @@
       <div id="inroominnercontainer" class="flex-body">
       <div id="roominfo" class="flex-column">
         <div class="flex-row">
+          <div id="crownicon"><img id="crownicon" src="assets/crown.png"></div>
           <div class="ideologyicon" id="ideologyicon1"><img id="ideologyiconimage1" src="assets/ideologyicons/nationalist.png" /></div>
           <div class="namebox" id="namebox1">
             <p id="inroomname1"></p>
@@ -82,6 +89,7 @@
           </div>
         </div>
         <div class="flex-row">
+          <button class="kick" id="kick1" onclick="Kick(1);"><img id="kickimg1" class="kickimg" src="assets/kick.png"></button>
           <div class="ideologyicon" id="ideologyicon2"><img id="ideologyiconimage2" src="assets/ideologyicons/nationalist.png" /></div>
           <div class="namebox" id="namebox2">
             <p id="inroomname2"></p>
@@ -89,6 +97,7 @@
           </div>
         </div>
         <div class="flex-row">
+          <button class="kick" id="kick2" onclick="Kick(2);"><img id="kickimg2" class="kickimg" src="assets/kick.png"></button>
           <div class="ideologyicon" id="ideologyicon3"><img id="ideologyiconimage3" src="assets/ideologyicons/nationalist.png" /></div>
           <div class="namebox" id="namebox3">
             <p id="inroomname3"></p>
@@ -96,6 +105,7 @@
           </div>
         </div>
         <div class="flex-row">
+          <button class="kick" id="kick3" onclick="Kick(3);"><img id="kickimg3" class="kickimg" src="assets/kick.png"></button>
           <div class="ideologyicon" id="ideologyicon4"><img id="ideologyiconimage4" src="assets/ideologyicons/nationalist.png" /></div>
           <div class="namebox" id="namebox4">
             <p id="inroomname4"></p>
@@ -103,6 +113,7 @@
           </div>
         </div>
         <div class="flex-row">
+          <button class="kick" id="kick4" onclick="Kick(4);"><img id="kickimg4" class="kickimg" src="assets/kick.png"></button>
           <div class="ideologyicon" id="ideologyicon5"><img id="ideologyiconimage5" src="assets/ideologyicons/nationalist.png" /></div>
           <div class="namebox" id="namebox5">
             <p id="inroomname5"></p>
@@ -110,6 +121,7 @@
           </div>
         </div>
         <div class="flex-row">
+          <button class="kick" id="kick5" onclick="Kick(5);"><img id="kickimg5" class="kickimg" src="assets/kick.png"></button>
           <div class="ideologyicon" id="ideologyicon6"><img id="ideologyiconimage6" src="assets/ideologyicons/nationalist.png" /></div>
           <div class="namebox" id="namebox6">
             <p id="inroomname6"></p>
@@ -117,6 +129,7 @@
           </div>
         </div>
         <div class="flex-row">
+          <button class="kick" id="kick6" onclick="Kick(6);"><img id="kickimg6" class="kickimg" src="assets/kick.png"></button>
           <div class="ideologyicon" id="ideologyicon7"><img id="ideologyiconimage7" src="assets/ideologyicons/nationalist.png" /></div>
           <div class="namebox" id="namebox7">
             <p id="inroomname7"></p>
@@ -124,6 +137,7 @@
           </div>
         </div>
         <div class="flex-row">
+          <button class="kick" id="kick7" onclick="Kick(7);"><img id="kickimg7" class="kickimg" src="assets/kick.png"></button>
           <div class="ideologyicon" id="ideologyicon8"><img id="ideologyiconimage8" src="assets/ideologyicons/nationalist.png" /></div>
           <div class="namebox" id="namebox8">
             <p id="inroomname8"></p>
