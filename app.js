@@ -42,7 +42,17 @@ class Game {
         this.map = map_;
         this.roomnum = roomnum_
         this.unclaimedcolors = [1, 2, 3, 4, 5, 6, 7, 8];
-        
+        let unique = false;
+        this.randomval;
+        while(!unique){
+            this.randomval = String.fromCharCode(65 + Math.floor(Math.random() * 26)) + String.fromCharCode(65 + Math.floor(Math.random() * 26)) + String.fromCharCode(65 + Math.floor(Math.random() * 26)) + String.fromCharCode(65 + Math.floor(Math.random() * 26));
+            unique = true;
+            for(let i = 0; i < gamelist.length; i++){
+                if(gamelist[i].randomval == this.randomval){
+                    unique = false;
+                }
+            }
+        }
         this.winner = null;
         this.players = []; // [socket, playernum, turnval, color, modifiers, ideology, name]
         this.stateowners = []; // array of all states, either -1 for unclaimed or playernum
@@ -127,18 +137,31 @@ class Game {
         }
     }
     
-    AdvanceTurn(depth = 0){
-        if(depth > 7){
-            this.DeleteGame();
-        }
+    AdvanceTurn(){
         this.turn = (this.turn + 1) % this.players.length;
         if(Count(this.stateowners, this.turn) == 0){
             this.players[this.turn][2] = 0
         }
-        if(this.players[this.turn][2] == 0){
-            this.AdvanceTurn(depth + 1);
+        let depth = 0;
+        if(this.players.length == 0){
+            this.DeleteGame();
         }
         else{
+            while(this.players[this.turn][2] == 0){
+                this.turn++;
+                if(this.turn == this.players.length){
+                    this.turn = 0;
+                }
+                depth++;
+                if(depth == 8){
+                    break;
+                }
+            }
+            if(depth == 8){
+                this.DeleteGame();
+            }
+        }
+        if(!this.players[this.turn][2] == 0){
             for(let i = 0; i < this.fincountdowns.length; i++){
                 if(this.stateowners[i] == this.turn){
                     this.fincountdowns[i]--;
@@ -245,6 +268,9 @@ class Game {
         for(let i = 0; i < this.players.length; i++){
             this.players[i][0].emit("playernum", i);
             this.players[i][0].emit("players", sendarray);
+            if(this.gamestate == "roomlobby"){
+                this.players[i][0].emit("id", this.randomval)
+            }
         }
     }
 
@@ -348,6 +374,9 @@ let roomnum = 0;
 
 io.on('connection', socket => {
     socket.on("createroom", (roomname, roompassword, maxplayers, roommap, name) => {
+        if(roomname.replace(/\s/g, '') == ""){
+            roomname = "Unnamed Room";
+        }
         if(socket.game == null){
             if(maxplayers < 9 && maxplayers > 1 && Math.round(maxplayers) == maxplayers && mapData.hasOwnProperty(roommap)){
                 socket.game = new Game(roomname, roompassword, maxplayers, roommap, roomnum);
@@ -361,10 +390,25 @@ io.on('connection', socket => {
     })
 
     socket.passwordattempt = false;
-    socket.on("joinroom", (id, name, password) =>{
+    socket.on("joinroom", (id, name, password, vialink) =>{
         if(socket.game == null){
             for(let i = 0; i < gamelist.length; i++){
-                if(id==gamelist[i].roomnum && gamelist[i].players.length < gamelist[i].maxplayers){
+                if(vialink && id == "#" + gamelist[i].randomval && gamelist[i].players.length < gamelist[i].maxplayers && gamelist[i].gamestate == "roomlobby"){
+                    if(!socket.passwordattempt){
+                        socket.passwordattempt = true;
+                        socket.emit("passwordsuccess", true);
+                        socket.game = gamelist[i];
+                        socket.playernum = socket.game.players.length;
+                        name = name.replace(/\W/g, '')
+                        if(name.length > 12){
+                            name = name.substring(0, 12);
+                        }
+                        socket.game.players.push([socket, socket.game.players.length, 1, socket.game.unclaimedcolors.shift(), [], 4, name]);
+                        socket.game.BroadcastPlayers();
+                        socket.passwordattempt = false;
+                    }
+                }
+                else if(id==gamelist[i].roomnum && gamelist[i].players.length < gamelist[i].maxplayers && gamelist[i].gamestate == "roomlobby"){
                     if(!socket.passwordattempt){
                         socket.passwordattempt = true;
                         setTimeout(()=>{
@@ -372,6 +416,10 @@ io.on('connection', socket => {
                                 socket.emit("passwordsuccess", true);
                                 socket.game = gamelist[i];
                                 socket.playernum = socket.game.players.length;
+                                name = name.replace(/\W/g, '')
+                                if(name.length > 12){
+                                    name = name.substring(0, 12);
+                                }
                                 socket.game.players.push([socket, socket.game.players.length, 1, socket.game.unclaimedcolors.shift(), [], 4, name]);
                                 socket.game.BroadcastPlayers();
                                 socket.passwordattempt = false;
@@ -456,7 +504,7 @@ io.on('connection', socket => {
     })
 
     socket.on("build", (index, type) =>{
-        if(socket.game != null){
+        if(socket.game != null && socket.game.turn == socket.playernum){
             socket.game.BuildImprovement(index, type);
         }
     })

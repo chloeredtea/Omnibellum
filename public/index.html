@@ -78,7 +78,11 @@
       <button id="createroomconfirm" onclick="CreateRoomSubmit();">CREATE</button>
     </div>
     <div id="inroomcontainer" class="flex-column">
-      <button onclick="ReturnToRoomSelect();" id="leavebutton"> <img src="assets/backarrow.png" /> LEAVE</button>
+      <div id="inroombuttons">
+        <button onclick="ReturnToRoomSelect();" id="leavebutton"> <img src="assets/backarrow.png" /> LEAVE</button>
+        <button onclick="CopyLink();" id="linkbutton"> <img src="assets/link.png" /> <p id="copylinktext">COPY LINK</p> </button>
+      </div>
+      
       <div id="inroominnercontainer" class="flex-body">
       <div id="roominfo" class="flex-column">
         <div class="flex-row">

@@ -290,6 +290,10 @@ function InitSocketFunctions(){
             ReturnToRoomSelect();
         }
     })
+
+    socket.on("id", (id) => {
+        game.id = id;
+    });
 }
 
 // Classes
@@ -353,7 +357,7 @@ class Game {
                         }
                         else if(this.gamestate == "build"){
                             if(mouseclick){
-                                if(!this.improvements[i].includes(this.buildtype) && this.stateowners[i] == this.turn){
+                                if(!this.improvements[i].includes(this.buildtype)){
                                     socket.emit("build", i, this.buildtype);
                                     game.buildcount--;
                                     if(game.buildcount > 0){
@@ -444,6 +448,7 @@ class Game {
                     }
                 }
             }
+            ictx.clearRect(0, 0, 1000, 1000);
             ictx.lineWidth = 10;
             for(let i = 0; i < this.players.length; i++){
                 ictx.beginPath();
@@ -471,7 +476,7 @@ class Game {
     }
 
     JoinRoom(id, password = ""){
-        socket.emit("joinroom", id, username, password);
+        socket.emit("joinroom", id, username, password, false);
     }
 
     UpdatePlayers(){
@@ -616,7 +621,9 @@ function PlayButton(){
     dom.welcomelargecontainer.style.display = "none";
     dom.roomslargecontainer.style.display = "flex";
     dom.header.style.display = "inline";
+    
     document.getElementById("passwordprompt").style.display = "none";
+    dom.username.value = dom.username.value.replace(/\W/g, '')
     if(dom.username.value == ""){
         username = "Anonymous"
     }
@@ -630,6 +637,9 @@ function PlayButton(){
         document.body.style.backgroundImage = "url('assets/partisa.png')";
         document.body.style.backgroundPosition = "center 0px";
         console.log("partisa");
+    }
+    if(!document.location.hash == ""){
+        socket.emit("joinroom", document.location.hash, username, "", true);
     }
 }
 
@@ -674,4 +684,13 @@ function SubmitPassword(){
 
 function Kick(num){
     socket.emit("kick", num);
+}
+
+function CopyLink(){
+    navigator.clipboard.writeText("https://www.omnibellum.io#" + game.id).then(()=>{
+        document.getElementById("copylinktext").innerHTML = "LINK COPIED!";
+        setTimeout(()=>{
+            document.getElementById("copylinktext").innerHTML = "COPY LINK";
+        }, 3500);
+    })
 }

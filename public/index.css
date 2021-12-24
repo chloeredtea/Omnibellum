@@ -415,10 +415,14 @@ body {
     align-items: center;
 }
 
+#inroombuttons{
+    display: flex;
+    justify-content: center;
+}
+
 #leavebutton{
     margin-top: 5vmin;
     width: 10vmin;
-    margin-right: 47.3vmin;
     height: 3.5vmin;
     font-family: 'urbanist-bold';
     font-size: 2vmin;
@@ -428,6 +432,7 @@ body {
     border-color: rgb(100, 10, 10);
     border-width: .2vmin;
     padding: 0;
+    margin-right: 15.5vmin;
 }
 
 #leavebutton img{
@@ -438,6 +443,43 @@ body {
 #leavebutton:hover {
     background-color: rgb(131, 4, 4);
     border-color: rgb(119, 27, 27);
+    transition: .2s;
+}
+
+#linkbutton{
+    margin-top: 5vmin;
+    width: 17vmin;
+    height: 3.5vmin;
+    font-family: 'urbanist-bold';
+    font-size: 2vmin;
+    border-style: solid;
+    color: white;
+    background-color: rgb(5, 13, 59);
+    border-color: rgb(11, 10, 100);
+    border-width: .2vmin;
+    padding: 0;
+    margin-left: 15.5vmin;
+    display:flex;
+    justify-content: center;
+}
+
+
+#linkbutton p{
+    margin: 0;
+    margin-left: 1vmin;
+    margin-top: .3vmin;
+}
+
+#linkbutton img{
+    height: 1.5vmin;
+    width: 1.5vmin;
+    margin: 0;
+    margin-top: .7vmin;
+}
+
+#linkbutton:hover {
+    background-color: rgb(32, 4, 131);
+    border-color: rgb(33, 27, 119);
     transition: .2s;
 }
 
@@ -782,19 +824,34 @@ body {
     font-size: 40px;
 }
 
+#ingameideologytooltips {
+    position: absolute;
+    top: 400px;
+    overflow: visible;
+}
+
+@media (max-width:1720px) {
+    #ingameideologytooltips {
+        position: absolute;
+        top: 400px;
+        right: 5vmin;
+        overflow: visible;
+    }
+}
+
 .ingameideologytooltip {
     font-family: 'urbanist';
     color: white;
-    height: 180px;
+    height: 195px;
     width: 270px;
     font-size: 18px;
-    position: absolute;
-    top: 400px;
     display: none;
+    position: sticky;
     text-align: center;
     border-style: solid;
     border-width: .6vmin;
     margin: 0 !important;
+    gap: .2vmin;
 }
 
 #iconcanvas {
