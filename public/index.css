@@ -828,14 +828,16 @@ body {
     position: absolute;
     top: 400px;
     overflow: visible;
+    margin-left: 5vmin;
 }
 
-@media (max-width:1720px) {
+@media (max-width:1860px) {
     #ingameideologytooltips {
         position: absolute;
         top: 400px;
         right: 5vmin;
         overflow: visible;
+        pointer-events:none;
     }
 }
 
@@ -852,6 +854,7 @@ body {
     border-width: .6vmin;
     margin: 0 !important;
     gap: .2vmin;
+    pointer-events:none;
 }
 
 #iconcanvas {

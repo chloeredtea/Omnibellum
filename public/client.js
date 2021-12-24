@@ -42,6 +42,7 @@ const mapnamedictionary = {
     "unitedstates": "United States",
     "europe": "Europe",
     "world": "World",
+    "fournations": "Four Nations",
 }
 
 const ideologydict = [
@@ -293,6 +294,14 @@ function InitSocketFunctions(){
 
     socket.on("id", (id) => {
         game.id = id;
+    });
+
+    socket.on("building", (player) =>{
+        dom.turnsremaining.innerText = game.players[player][5] + " is building.";
+    });
+
+    socket.on("map", (map)=>{
+        ChangeMapImage(map);
     });
 }
 
@@ -676,6 +685,11 @@ function ChangeMapSelectImage(select){
     image.src="/assets/" + select.options[select.selectedIndex].value + ".png";
     image = document.getElementById("mapimage");
     image.src="/assets/" + select.options[select.selectedIndex].value + ".png";
+}
+
+function ChangeMapImage(map){
+    image = document.getElementById("mapimage");
+    image.src="/assets/" + map + ".png";
 }
 
 function SubmitPassword(){
