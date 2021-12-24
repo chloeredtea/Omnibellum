@@ -289,8 +289,10 @@ class Game {
             this.players[i][0].emit("gamestate", this.gamestate);
         }
         if(this.gamestate == "conquest"){
-            for(let i = 0; i < this.players.length; i++){
-                this.players[i][0].emit("conquest", 0, -1, false, this.turn, this.subturn, this.maxsubactions, this.statecounts, this.players[this.turn][2], this.fincountdowns);
+            if(this.players[this.turn] != null){
+                for(let i = 0; i < this.players.length; i++){
+                    this.players[i][0].emit("conquest", 0, -1, false, this.turn, this.subturn, this.maxsubactions, this.statecounts, this.players[this.turn][2], this.fincountdowns);
+                }    
             }
         }
         if(this.gamestate == "endscreen"){
@@ -338,8 +340,11 @@ class Game {
                     this.turn++;
                     let endgame = true;
                     for(let i = 0; i < 8; i++){
-                        if(this.players[this.turn][2] == 0){
+                        if(this.players.turn != null && this.players[this.turn][2] == 0){
                             this.turn++;
+                            if(this.turn == this.players.length){
+                                this.turn = 0;
+                            }
                         }
                         else{
                             endgame = false;
@@ -348,6 +353,7 @@ class Game {
                     }
                     if(endgame){
                         this.DeleteGame();
+                        return;
                     }
                 }
             }
@@ -421,9 +427,7 @@ class Game {
             this.BroadcastPlayers();
         }
     }
-
 }
-
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -439,7 +443,7 @@ io.on('connection', socket => {
             if(maxplayers < 9 && maxplayers > 1 && Math.round(maxplayers) == maxplayers && mapData.hasOwnProperty(roommap)){
                 socket.game = new Game(roomname, roompassword, maxplayers, roommap, roomnum);
                 roomnum++;
-                socket.game.players.push([socket, 0, 1, 0, [], 0, name]);
+                socket.game.players.push([socket, 0, 1, 0, [], Math.floor(Math.random()*5), name]);
                 gamelist.push(socket.game);
                 socket.game.BroadcastPlayers();
                 socket.playernum = 0;
@@ -461,7 +465,7 @@ io.on('connection', socket => {
                         if(name.length > 12){
                             name = name.substring(0, 12);
                         }
-                        socket.game.players.push([socket, socket.game.players.length, 1, socket.game.unclaimedcolors.shift(), [], 4, name]);
+                        socket.game.players.push([socket, socket.game.players.length, 1, socket.game.unclaimedcolors.shift(), [], Math.floor(Math.random()*5), name]);
                         socket.game.BroadcastPlayers();
                         socket.passwordattempt = false;
                         socket.emit("map", socket.game.map);
@@ -479,7 +483,7 @@ io.on('connection', socket => {
                                 if(name.length > 12){
                                     name = name.substring(0, 12);
                                 }
-                                socket.game.players.push([socket, socket.game.players.length, 1, socket.game.unclaimedcolors.shift(), [], 4, name]);
+                                socket.game.players.push([socket, socket.game.players.length, 1, socket.game.unclaimedcolors.shift(), [], Math.floor(Math.random()*5), name]);
                                 socket.game.BroadcastPlayers();
                                 socket.passwordattempt = false;
                                 socket.emit("map", socket.game.map);

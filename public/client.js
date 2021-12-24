@@ -185,7 +185,15 @@ function InitSocketFunctions(){
     socket.on("winner", (winner) =>{
         game.winner = winner;
         game.highlightedstate = null;
-        dom.winnerdisplay.innerHTML = game.players[winner][5] + " wins!";
+        if(winner == game.player){
+            dom.winnerdisplay.innerHTML = "VICTORY!!!!";
+            dom.winnerdisplay.style.color = "#FFF";
+        }
+        else{
+            dom.winnerdisplay.innerHTML = game.players[winner][5].toUpperCase() + " WINS!";
+            dom.winnerdisplay.style.color = colors[game.players[winner][0]];
+        }
+        
         dom.endscreenlargecontainer.style.display = "flex";
     })
 
@@ -463,6 +471,11 @@ class Game {
                 ictx.beginPath();
                 ictx.arc(32.5, 57.5+70*i, 22.5, 0, 2*Math.PI)
                 ictx.strokeStyle = "#000";
+                if(!this.stateowners.includes(i) && this.gamestate == "conquest"){
+                    ictx.strokeStyle = "#999";
+                    dom["" + i + "info"].innerText = 0;
+                    dom["" + i + "info"].style.color = "#999";
+                }
                 if(this.gamestate == "claim"){
                     if(!this.playersfinishedclaiming[i]){
                         ictx.strokeStyle = "#FFF";
