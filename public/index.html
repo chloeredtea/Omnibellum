@@ -247,8 +247,8 @@
           <p id="turnsremaining">1 Actions Remaining</p>
         </div>
       </div>
-      <div class="flex-column">
-        <div class="flex-row" id="playerlist">
+      <div class="flex-column" id="playerlist">
+        <div class="flex-row">
           <canvas id="iconcanvas"></canvas>
           <div id="nameplatecontainer">
           </div>
@@ -311,7 +311,8 @@
     <div id="endscreencontainer" class="flex-body">
       <div class="flex-column">
         <h1 id="winner">Chloe wins!</h1>
-        <button onclick="LeaveFinishedGame();">LEAVE</button>
+        <button onclick="PlayAgain();" id="playagainwinnerbutton">PLAY AGAIN</button>
+        <button onclick="LeaveFinishedGame();" id="leavewinnerbutton">LEAVE</button>
       </div>
     </div>
     <div id="hidden">

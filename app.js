@@ -3,6 +3,7 @@ const path = require('path');
 const socket = require('socket.io');
 const fs = require("fs");
 const { threadId } = require('worker_threads');
+const e = require('express');
 
 const PORT = 3000 || process.env.PORT
 
@@ -53,6 +54,7 @@ class Game {
         this.maxplayers = maxplayers_;
         this.map = map_;
         this.roomnum = roomnum_
+        this.oldplayers = null;
         this.unclaimedcolors = [1, 2, 3, 4, 5, 6, 7, 8];
         let unique = false;
         this.randomval;
@@ -168,6 +170,7 @@ class Game {
                             analyticsdata[this.map + this.playerstartingtiles[this.winner] + "winner"] = 0;
                         }
                         analyticsdata[this.map + this.playerstartingtiles[this.winner] + "winner"]++;
+                        analyticsdata["ideologywins"][this.players[this.turn][5]]++;
                         this.BroadcastNewGamestate();
                     }
                 }
@@ -198,6 +201,16 @@ class Game {
             if(depth == 8){
                 this.DeleteGame();
             }
+        }
+        let endgamenow = true;
+        for(let i = 0; i < this.players.length; i++){
+            if(this.players[i] != null && this.players[i][2] != 0){
+                endgamenow = false;
+            }
+        }
+        if(endgamenow){
+            this.DeleteGame();
+            return;
         }
         if(!this.players[this.turn][2] == 0){
             for(let i = 0; i < this.fincountdowns.length; i++){
@@ -320,16 +333,18 @@ class Game {
     RemovePlayer(playernum){
         if(this.gamestate == "roomlobby"){
             // Add the player's color back to the pool
-            this.unclaimedcolors.push(this.players[playernum][3])
-            this.unclaimedcolors.sort();
-            this.players.splice(playernum, 1);
-
-            // Adjust player numbers
-            for(let i = 0; i < this.players.length; i++){
-                this.players[i][0].playernum = i;
-                this.players[i][1] = i;
+            if(this.oldplayers == null){
+                this.unclaimedcolors.push(this.players[playernum][3])
+                this.unclaimedcolors.sort();
+                this.players.splice(playernum, 1);
+    
+                // Adjust player numbers
+                for(let i = 0; i < this.players.length; i++){
+                    this.players[i][0].playernum = i;
+                    this.players[i][1] = i;
+                }
+                this.BroadcastPlayers();
             }
-            this.BroadcastPlayers();
         }
         else if(this.gamestate == "claim"){
             this.players[playernum][2] = 0;
@@ -361,23 +376,41 @@ class Game {
                 this.gamestate = "conquest";
                 this.BroadcastNewGamestate();
             }
+            this.BroadcastPlayers();
         }
         else if(this.gamestate == "conquest"){
             this.players[playernum][2] = 0;
             if(this.turn == playernum){
                 this.subturn = 0;
+                this.winner = playernum;
                 this.AdvanceTurn();
             }
             this.BroadcastNewTurn();
+            this.BroadcastPlayers();
         }
         else if(this.gamestate == "build"){
             this.players[playernum][2] = 0;
             if(this.turn == playernum){
                 this.gamestate = "conquest";
+                this.winner = playernum;
                 this.subturn = 0;
                 this.AdvanceTurn();
             }
             this.BroadcastNewTurn();
+            this.BroadcastPlayers();
+        }
+        else if(this.gamestate == "endscreen"){
+            this.players[playernum][2] = 0;
+            let end = true;
+            for(let i = 0; i < this.players.length; i++){
+                if(this.players[i] != null && this.players[i][2] != 0){
+                    end = false;
+                    break;
+                }
+            }
+            if(end){
+                this.DeleteGame();
+            }
         }
         if(this.players.length == 0){
             this.DeleteGame();
@@ -385,6 +418,11 @@ class Game {
     }
 
     DeleteGame(){
+        for(let i = 0; i < this.players.length; i++){
+            if(this.players[i] != null){
+                this.players[i][0].emit("winner", -1)
+            }
+        }
         for(let i = 0; i < gamelist.length; i++){
             if(this == gamelist[i]){
                 gamelist.splice(i, 1);
@@ -427,6 +465,46 @@ class Game {
             this.BroadcastPlayers();
         }
     }
+
+    PlayAgain(socket, name, color, ideology){
+        if(this.gamestate == "endscreen"){
+            this.gamestate = "roomlobby";
+            this.unclaimedcolors = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+            this.winner = null;
+            this.oldplayers = this.players;
+            this.players = [];
+            this.stateowners = []; // array of all states, either -1 for unclaimed or playernum
+            this.fincountdowns = []; // array of all states, either -1 for no fincountdown or turns til completion
+            this.tileimprovements = []; // array of all states, either [] for no improvements or the array contains improvements.
+            this.playerstartingtiles = [];
+            this.buildcount = 0;
+            this.turn = 0;
+            this.subturn = 0;
+            this.claimnum = 0;
+            this.claimed = [];
+            this.statecounts = [];
+            this.maxsubactions = [];
+            for(let i = 2; i < Object.keys(mapData[this.map]).length; i++){
+                this.stateowners.push(-1);
+                this.fincountdowns.push(-1);
+                this.tileimprovements.push([]);
+            }
+            for(let i = 0; i < mapData[this.map].length - 2; i++){
+                for(let j = 0; j < mapData[this.map][i+2][9].length; j++){
+                    this.tileimprovements[i].push(mapData[this.map][i+2][9][j]);
+                }
+            }
+        }
+        socket.playernum = this.players.length;
+        if(this.unclaimedcolors.includes(color)){
+            this.unclaimedcolors.splice(this.unclaimedcolors.indexOf(color), 1);
+        }
+        else{
+            color = this.unclaimedcolors.shift();
+        }
+        this.players.push([socket, this.players.length, 1, color, [], ideology, name]);
+        this.BroadcastPlayers();
+    }
 }
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -443,7 +521,10 @@ io.on('connection', socket => {
             if(maxplayers < 9 && maxplayers > 1 && Math.round(maxplayers) == maxplayers && mapData.hasOwnProperty(roommap)){
                 socket.game = new Game(roomname, roompassword, maxplayers, roommap, roomnum);
                 roomnum++;
-                socket.game.players.push([socket, 0, 1, 0, [], Math.floor(Math.random()*5), name]);
+                socket.myname = name;
+                socket.mycolor = 0;
+                socket.myideology = Math.floor(Math.random()*5)
+                socket.game.players.push([socket, 0, 1, 0, [], socket.myideology, name]);
                 gamelist.push(socket.game);
                 socket.game.BroadcastPlayers();
                 socket.playernum = 0;
@@ -465,7 +546,10 @@ io.on('connection', socket => {
                         if(name.length > 12){
                             name = name.substring(0, 12);
                         }
-                        socket.game.players.push([socket, socket.game.players.length, 1, socket.game.unclaimedcolors.shift(), [], Math.floor(Math.random()*5), name]);
+                        socket.myname = name;
+                        socket.mycolor = socket.game.unclaimedcolors.shift()
+                        socket.myideology = Math.floor(Math.random()*5)
+                        socket.game.players.push([socket, socket.game.players.length, 1, socket.mycolor, [], socket.myideology, name]);
                         socket.game.BroadcastPlayers();
                         socket.passwordattempt = false;
                         socket.emit("map", socket.game.map);
@@ -483,7 +567,10 @@ io.on('connection', socket => {
                                 if(name.length > 12){
                                     name = name.substring(0, 12);
                                 }
-                                socket.game.players.push([socket, socket.game.players.length, 1, socket.game.unclaimedcolors.shift(), [], Math.floor(Math.random()*5), name]);
+                                socket.myname = name;
+                                socket.mycolor = socket.game.unclaimedcolors.shift()
+                                socket.myideology = Math.floor(Math.random()*5)
+                                socket.game.players.push([socket, socket.game.players.length, 1, socket.mycolor, [], socket.myideology, socket.myname]);
                                 socket.game.BroadcastPlayers();
                                 socket.passwordattempt = false;
                                 socket.emit("map", socket.game.map);
@@ -503,6 +590,7 @@ io.on('connection', socket => {
         if(socket.game != null){
             if(socket.game.gamestate == "roomlobby"){
                 if(socket.game.unclaimedcolors.includes(val)){
+                    socket.mycolor = val;
                     socket.game.unclaimedcolors.splice(socket.game.unclaimedcolors.indexOf(val), 1);
                     socket.game.unclaimedcolors.push(socket.game.players[socket.playernum][3])
                     socket.game.players[socket.playernum][3] = val;
@@ -576,6 +664,7 @@ io.on('connection', socket => {
     socket.on("changeideology", (type) =>{
         if(socket.game != null && Number.isInteger(type) && type >= 0 && type < 5){
             socket.game.ChangeIdeology(type, socket.playernum);
+            socket.myideology = type;
         }
     })
 
@@ -584,6 +673,12 @@ io.on('connection', socket => {
             socket.game.players[num][0].emit("kicked", true);
             socket.game.players[num][0].game = null;
             socket.game.RemovePlayer(num);
+        }
+    })
+
+    socket.on("playagain", ()=>{
+        if(socket.game != null && (socket.game.gamestate == "roomlobby" || socket.game.gamestate == "endscreen")){
+            socket.game.PlayAgain(socket, socket.myname, socket.mycolor, socket.myideology);
         }
     })
 

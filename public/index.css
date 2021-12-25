@@ -46,6 +46,8 @@ body {
     color: white;
 }
 
+
+
 /* Welcome Screen */
 
 #welcomebox {
@@ -774,6 +776,8 @@ body {
 
 #ingamecontainer {
     display: none;
+    margin-left: 1vmin;
+    overflow-y: hidden;
 }
 
 .nameplate{
@@ -888,7 +892,39 @@ body {
 #buildbuttondiv {
     height: 80%;
     justify-content: center;
+    margin-top: -150px;
 }
+
+
+@media (max-width: 1200px){
+    #ingamecontainer{
+        padding-left: 3vw;
+        overflow-x: hidden;
+    }
+    .nameplate p {
+        font-size:36px;
+        margin-top: 12px;
+        max-width: 100px;
+    }
+    .realname {
+        margin-left: -65px;
+    }
+    #playerlist {
+        max-width: 400px;
+        margin-top: -150px;
+        transform: scale(33%);
+        -webkit-transform: scale(33%);
+        margin-left: -50px;
+    }
+    
+    #buildbuttondiv{
+        transform: scale(50%);
+        -webkit-transform: scale(50%);
+        margin-right: -5vmin;
+        margin-top: -50px;
+    }
+}
+
 
 /* End Screen */
 
@@ -905,15 +941,21 @@ body {
     transform: translate(-50%, 0);
     display: none;
     justify-content: center;
+    align-items: center;
+    text-align: center;
 }
 
-#endscreencontainer button {
+#endscreencontainer div {
+    justify-content: center;
+    align-items: center;
+}
+
+#leavewinnerbutton {
     font-family: "urbanist-bold";
     font-size: 20px;
     width: 80px;
     height: 40px;
     margin-top: 20px;
-    margin-left: 38%;
     border-style: solid;
     color: white;
     background-color: rgb(59, 5, 5);
@@ -921,9 +963,28 @@ body {
     border-width: .2vmin;
 }
 
-#endscreencontainer button:hover {
+#leavewinnerbutton:hover {
     background-color: rgb(131, 4, 4);
     border-color: rgb(119, 27, 27);
+    transition: .2s;
+}
+
+#playagainwinnerbutton {
+    font-family: "urbanist-bold";
+    font-size: 20px;
+    width: 140px;
+    height: 40px;
+    margin-top: 20px;
+    border-style: solid;
+    color: white;
+    background-color: rgb(16, 59, 5);
+    border-color: rgb(17, 100, 10);
+    border-width: .2vmin;
+}
+
+#playagainwinnerbutton:hover {
+    background-color: rgb(4, 131, 10);
+    border-color: rgb(27, 119, 32);
     transition: .2s;
 }
 

@@ -76,7 +76,7 @@ function Init(){
         mouseclick = true;
     }
     dom.iconc.width = 65;
-    dom.iconc.height = 600;
+    dom.iconc.height = 940;
 
     document.getElementById("nationalistbutton").onmouseenter = () => {
         document.getElementById("inlobby0").style.display = "block";
@@ -183,16 +183,23 @@ function InitSocketFunctions(){
     })
 
     socket.on("winner", (winner) =>{
-        game.winner = winner;
-        game.highlightedstate = null;
-        if(winner == game.player){
-            dom.winnerdisplay.innerHTML = "VICTORY!!!!";
-            dom.winnerdisplay.style.color = "#FFF";
+        if(winner == -1){
+            dom.winnerdisplay.innerHTML = "nobody wins. how could you let this happen? it's really not that hard to just claim the remaining tiles... but the would-be winner left. you don't even get to play again now. try it. the button won't work. you'll be in a broken lobby. hope you're happy.";
+
         }
         else{
-            dom.winnerdisplay.innerHTML = game.players[winner][5].toUpperCase() + " WINS!";
-            dom.winnerdisplay.style.color = colors[game.players[winner][0]];
+            game.winner = winner;
+            game.highlightedstate = null;
+            if(winner == game.player){
+                dom.winnerdisplay.innerHTML = "VICTORY!!!!";
+                dom.winnerdisplay.style.color = "#FFF";
+            }
+            else{
+                dom.winnerdisplay.innerHTML = game.players[winner][5].toUpperCase() + " WINS!";
+                dom.winnerdisplay.style.color = colors[game.players[winner][0]];
+            }
         }
+
         
         dom.endscreenlargecontainer.style.display = "flex";
     })
@@ -469,9 +476,14 @@ class Game {
             ictx.lineWidth = 10;
             for(let i = 0; i < this.players.length; i++){
                 ictx.beginPath();
-                ictx.arc(32.5, 57.5+70*i, 22.5, 0, 2*Math.PI)
+                if(window.innerWidth > 1200){
+                    ictx.arc(32.5, 57.5+80*i, 22.5, 0, 2*Math.PI)
+                }
+                else{
+                    ictx.arc(32.5, 57.5+105*i, 22.5, 0, 2*Math.PI)
+                }
                 ictx.strokeStyle = "#000";
-                if(!this.stateowners.includes(i) && this.gamestate == "conquest"){
+                if((!this.stateowners.includes(i) || dom["" + i + "info"].innerText == 0) && this.gamestate == "conquest"){
                     ictx.strokeStyle = "#999";
                     dom["" + i + "info"].innerText = 0;
                     dom["" + i + "info"].style.color = "#999";
@@ -509,6 +521,7 @@ class Game {
                     nameplatediv.classList.add("nameplate")
                     let name = document.createElement("p");
                     name.innerText = this.players[dom.nameplatecontainer.childElementCount][5];
+                    name.classList.add("realname")
                     nameplatediv.appendChild(name);
                     let infodiv = document.createElement("div");
                     infodiv.classList.add("flex-row");
@@ -516,7 +529,6 @@ class Game {
                     let ideologyimage = document.createElement("img");
                     ideologyimage.classList.add("ideologyimage");
                     let info = document.createElement("p");
-                    info.innerText = "1";
                     infodiv.appendChild(ideologyimage);
                     infodiv.appendChild(info);
                     nameplatediv.appendChild(infodiv);
@@ -628,7 +640,6 @@ function Leave(){
 }
 
 function LeaveFinishedGame(){
-    
     Leave();
     dom.ingamelargecontainer.style.display = "none";
     dom.endscreenlargecontainer.style.display = "none";
@@ -720,4 +731,14 @@ function CopyLink(){
             document.getElementById("copylinktext").innerHTML = "COPY LINK";
         }, 3500);
     })
+}
+
+function PlayAgain(){
+    dom.ingamelargecontainer.style.display = "none";
+    dom.endscreenlargecontainer.style.display = "none";
+    dom.inroomlargecontainer.style.display = "flex";
+    clearInterval(game.gameInterval);
+    game = new Game();
+    game.gamestate = "roomlobby";
+    socket.emit("playagain");
 }
