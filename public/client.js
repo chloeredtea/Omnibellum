@@ -165,10 +165,21 @@ function InitSocketFunctions(){
         }
         if(game.gamestate == "conquest"){
             game.turn = turn;
-            dom.turnsremaining.innerText = (currentmaxsubactions - subaction) + " Actions Remaining";
+            if(turn == game.player){
+                dom.turnsremaining.innerText = "Your turn! " + (currentmaxsubactions - subaction) + " Actions Remaining";
+            }
+            else {
+                dom.turnsremaining.innerText = (currentmaxsubactions - subaction) + " Actions Remaining";
+            }
         }
         if(tile == -1){
-            dom.turnsremaining.innerText = (currentmaxsubactions - subaction) + " Actions Remaining";
+            game.turn = turn;
+            if(turn == game.player){
+                dom.turnsremaining.innerText = "Your turn! " + (currentmaxsubactions - subaction) + " Actions Remaining";
+            }
+            else {
+                dom.turnsremaining.innerText = (currentmaxsubactions - subaction) + " Actions Remaining";
+            }
         }
         game.fincountdowns = fincountdowns;
     });
@@ -176,6 +187,10 @@ function InitSocketFunctions(){
     socket.on("gamestate", (gamestate) => {
         game.gamestate = gamestate;
         if(gamestate == "claim"){
+            game.dontclickyet = true;
+            setTimeout( ()=>{
+                game.dontclickyet = false;
+            }, 1000)
             dom.inroomlargecontainer.style.display = "none";
             dom.ingamelargecontainer.style.display = "flex";
         }
@@ -184,7 +199,6 @@ function InitSocketFunctions(){
 
     socket.on("winner", (winner) =>{
         if(winner == -1){
-            dom.winnerdisplay.innerHTML = "nobody wins. how could you let this happen? it's really not that hard to just claim the remaining tiles... but the would-be winner left. you don't even get to play again now. try it. the button won't work. you'll be in a broken lobby. hope you're happy.";
 
         }
         else{
@@ -370,7 +384,7 @@ class Game {
                     if(pointinside(this.metadata[i][6], this.metadata[i][7], mousex, mousey)){
                         this.highlightedstate = i;
                         if(this.gamestate == "claim"){
-                            if(mouseclick){
+                            if(mouseclick && !this.dontclickyet){
                                 socket.emit("attack", i);
                             }
                         }
