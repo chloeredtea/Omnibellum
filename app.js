@@ -3,8 +3,6 @@ const path = require('path');
 const socket = require('socket.io');
 const fs = require("fs");
 const https = require('https');
-const { threadId } = require('worker_threads');
-const { time } = require('console');
 
 const options = {
     key: fs.readFileSync(__dirname + '/privkey.pem', 'utf8'),
