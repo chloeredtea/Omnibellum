@@ -5,7 +5,7 @@ const fs = require("fs");
 const { threadId } = require('worker_threads');
 const { time } = require('console');
 
-const PORT = 3000 || process.env.PORT
+const PORT = 80 || process.env.PORT
 
 const app = express();
 module.exports = app;
