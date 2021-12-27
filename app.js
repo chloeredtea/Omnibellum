@@ -2,14 +2,24 @@ const express = require('express');
 const path = require('path');
 const socket = require('socket.io');
 const fs = require("fs");
+const https = require('https');
 const { threadId } = require('worker_threads');
 const { time } = require('console');
 
-const PORT = 80 || process.env.PORT
+const options = {
+    key: fs.readFileSync(__dirname + '/privkey.pem', 'utf8'),
+    cert: fs.readFileSync(__dirname + '/cert.pem', 'utf8'),
+    ca: fs.readFileSync(__dirname + '/chain.pem', 'utf8')
+}
 
 const app = express();
 module.exports = app;
-const server = app.listen(PORT)
+const server = https.createServer(options, app);
+
+server.listen(443, ()=>{
+    console.log("Server running");
+})
+
 const io = socket(server);
 
 const spritesheets = {}

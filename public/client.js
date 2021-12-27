@@ -190,7 +190,7 @@ function InitSocketFunctions(){
             game.dontclickyet = true;
             setTimeout( ()=>{
                 game.dontclickyet = false;
-            }, 1000)
+            }, 200)
             dom.inroomlargecontainer.style.display = "none";
             dom.ingamelargecontainer.style.display = "flex";
         }
