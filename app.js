@@ -354,7 +354,6 @@ class Game {
                 this.unclaimedcolors.push(this.players[playernum][3])
                 this.unclaimedcolors.sort();
                 this.players.splice(playernum, 1);
-    
                 // Adjust player numbers
                 for(let i = 0; i < this.players.length; i++){
                     this.players[i][0].playernum = i;
@@ -535,6 +534,9 @@ class Game {
                 for(let j = 0; j < mapData[this.map][i+2][9].length; j++){
                     this.tileimprovements[i].push(mapData[this.map][i+2][9][j]);
                 }
+            }
+            if(!gamelist.includes(this)){
+                gamelist.push(this);
             }
         }
         socket.playernum = this.players.length;
