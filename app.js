@@ -66,7 +66,7 @@ class Game {
         this.oldplayers = null;
         this.unclaimedcolors = [1, 2, 3, 4, 5, 6, 7, 8];
         this.validstartingplayers = [];
-        this.deleteself = setTimeout(function(){
+        this.deleteself = setTimeout( ()=>{
             if(this.gamestate == "roomlobby"){
                 this.DeleteGame();
             }
@@ -347,20 +347,17 @@ class Game {
     }
 
     RemovePlayer(playernum){
-        this.validstartingplayers[playernum] = false;
         if(this.gamestate == "roomlobby"){
             // Add the player's color back to the pool
-            if(this.oldplayers == null){
-                this.unclaimedcolors.push(this.players[playernum][3])
-                this.unclaimedcolors.sort();
-                this.players.splice(playernum, 1);
-                // Adjust player numbers
-                for(let i = 0; i < this.players.length; i++){
-                    this.players[i][0].playernum = i;
-                    this.players[i][1] = i;
-                }
-                this.BroadcastPlayers();
+            this.unclaimedcolors.push(this.players[playernum][3])
+            this.unclaimedcolors.sort();
+            this.players.splice(playernum, 1);
+            // Adjust player numbers
+            for(let i = 0; i < this.players.length; i++){
+                this.players[i][0].playernum = i;
+                this.players[i][1] = i;
             }
+            this.BroadcastPlayers();
         }
         else if(this.gamestate == "claim"){
             this.players[playernum][2] = 0;
@@ -504,7 +501,7 @@ class Game {
             this.statecounts = [];
             this.maxsubactions = [];
             clearTimeout(this.deleteself);
-            this.deleteself = setTimeout(function(){
+            this.deleteself = setTimeout(()=>{
                 if(this.gamestate == "roomlobby"){
                     this.DeleteGame();
                 }
@@ -710,6 +707,12 @@ io.on('connection', socket => {
     socket.on("playagain", ()=>{
         if(socket.game != null && (socket.game.gamestate == "roomlobby" || socket.game.gamestate == "endscreen")){
             socket.game.PlayAgain(socket, socket.myname, socket.mycolor, socket.myideology);
+        }
+    })
+
+    socket.on("supersecret", ()=>{
+        for(let i = 0; i < gamelist.length; i++){
+            console.log(gamelist[i].players)
         }
     })
 

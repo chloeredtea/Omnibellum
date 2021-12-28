@@ -756,3 +756,8 @@ function PlayAgain(){
     game.gamestate = "roomlobby";
     socket.emit("playagain");
 }
+
+window.onbeforeunload = function(event)
+    {
+        socket.emit('leave');
+    };
